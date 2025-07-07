@@ -60,17 +60,24 @@ export async function POST(request: NextRequest) {
     // Prepare the prompt for OpenAI
     const systemPrompt = `You are an expert deal analyzer and price comparison specialist. 
     
-Your task is to analyze search results and extract only the most relevant and valuable shopping opportunities for a specific product query.
+Your task is to analyze search results and extract ONLY the best and most relevant shopping deals for a specific product query.
 
-Guidelines:
+STRICT FILTERING GUIDELINES:
 1. ONLY include results that are directly relevant to the searched product
-2. Extract pricing information when available 
-3. Identify actual shopping opportunities (not just informational pages)
-4. Rate deal quality based on price, availability, seller reputation
-5. Exclude app store listings, unrelated products, and informational pages
-6. Focus on actual retailers and shopping sites
+2. EXCLUDE: App store listings, informational pages, news articles, reviews, unrelated products
+3. INCLUDE ONLY: Actual shopping sites with clear product listings
+4. Focus on deals with good prices, discounts, or high-quality retailers
+5. Rate deal quality as 'excellent' for great prices/discounts, 'good' for fair deals
+6. DO NOT include 'poor' or 'average' deals - only show the best options
+7. Extract actual prices when visible in snippets
+8. Prioritize well-known, reputable retailers
 
-Return a JSON object with structured deal information.`;
+QUALITY STANDARDS:
+- Excellent: Clear discount, competitive price, reputable seller
+- Good: Fair price, decent seller, good availability
+- DO NOT INCLUDE: Poor or average quality deals
+
+Return only the top deals that users should actually consider buying.`;
 
     const userPrompt = `Search Query: "${query}"
 Country: ${country}
@@ -101,7 +108,12 @@ Please analyze these results and return a JSON object with this structure:
   "summary": "Brief summary of the best deals found"
 }
 
-Only include results that are actually relevant to buying "${query}". Exclude app store listings, informational pages, and unrelated products.`;
+IMPORTANT: Only include EXCELLENT and GOOD quality deals that are directly relevant to buying "${query}". 
+- Completely exclude app store listings, informational pages, news articles, and unrelated products
+- Focus on actual shopping opportunities with competitive prices
+- If a result doesn't clearly offer the product for sale, exclude it
+- Prioritize deals with visible prices, discounts, or from reputable retailers
+- Maximum 20 best deals only`;
 
     // Call OpenAI API
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -174,7 +186,7 @@ Only include results that are actually relevant to buying "${query}". Exclude ap
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   return NextResponse.json({
     message: "Use POST method to analyze deals",
     example: {

@@ -11,7 +11,6 @@ import {
   SortAsc, 
   Brain,
   AlertCircle,
-  CheckCircle,
   TrendingUp,
   Award,
   Star
@@ -54,7 +53,7 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
           <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-600 mb-2">No relevant deals found</h3>
           <p className="text-gray-500 mb-6">
-            The AI couldn't find any relevant shopping results for "{analysis.query}".
+            The AI couldn&apos;t find any relevant shopping results for &quot;{analysis.query}&quot;.
           </p>
           <p className="text-sm text-gray-400">
             Try searching with more specific product names or different keywords.
@@ -81,7 +80,7 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="w-5 h-5 text-purple-600" />
-            AI Deal Analysis for "{analysis.query}"
+            AI Deal Analysis for &quot;{analysis.query}&quot;
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -205,7 +204,7 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
           <div className="text-sm text-gray-600">
             <p className="mb-2">Analysis powered by: {analysis.searchEngineUsed}</p>
             <p className="text-xs">
-              Results are analyzed by AI for relevance and deal quality. Prices and availability should be verified on the retailer's website.
+              Results are analyzed by AI for relevance and deal quality. Prices and availability should be verified on the retailer&apos;s website.
             </p>
           </div>
         </CardContent>

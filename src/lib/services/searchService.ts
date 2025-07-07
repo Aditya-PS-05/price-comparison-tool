@@ -43,7 +43,7 @@ export class SearchService {
         searchResults = await this.apiService.googleCustomSearch({
           query: searchQuery,
           country: countryCode,
-          maxResults: options.maxResults || 10
+          maxResults: options.maxResults || 100
         });
         searchEngine = 'google_custom_search';
       }
@@ -52,7 +52,7 @@ export class SearchService {
         searchResults = await this.apiService.serpApiSearch({
           query: searchQuery,
           country: countryCode,
-          maxResults: options.maxResults || 10
+          maxResults: options.maxResults || 100
         });
         searchEngine = 'serpapi';
       }

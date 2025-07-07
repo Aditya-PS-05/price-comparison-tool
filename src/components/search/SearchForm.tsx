@@ -1,41 +1,35 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Globe, Package, Loader2, Brain, Zap } from 'lucide-react';
+import { Search, Globe, Package, Loader2, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ProductSearchResponse, AnalysisResponse } from '@/lib/types/product';
+import { AnalysisResponse } from '@/lib/types/product';
 import { RegionMapper } from '@/lib/services/regionMapper';
 
 interface SearchFormProps {
-  onResults: (results: ProductSearchResponse) => void;
   onAnalysis: (analysis: AnalysisResponse) => void;
   onError: (error: string) => void;
 }
 
-export function SearchForm({ onResults, onAnalysis, onError }: SearchFormProps) {
+export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
   const [query, setQuery] = useState('');
   const [country, setCountry] = useState('US');
   const [loading, setLoading] = useState(false);
-  const [analyzing, setAnalyzing] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   const supportedCountries = RegionMapper.getSupportedCountries();
 
-  const handleSearch = async (analyzeDeals = false) => {
+  const handleSearch = async () => {
     if (!query.trim()) {
       onError('Please enter a search query');
       return;
     }
 
-    if (analyzeDeals) {
-      setAnalyzing(true);
-    } else {
-      setLoading(true);
-    }
+    setLoading(true);
     
     try {
       const searchRequest = {
@@ -43,7 +37,7 @@ export function SearchForm({ onResults, onAnalysis, onError }: SearchFormProps) 
         query: query.trim()
       };
 
-      // First get the raw search results
+      // First get the raw search results (up to 100)
       const searchResponse = await fetch('/api/search', {
         method: 'POST',
         headers: {
@@ -58,30 +52,25 @@ export function SearchForm({ onResults, onAnalysis, onError }: SearchFormProps) 
 
       const searchData = await searchResponse.json();
       
-      if (analyzeDeals) {
-        // Send search results to LLM for analysis
-        const analysisResponse = await fetch('/api/analyze-deals', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: query.trim(),
-            country,
-            searchResults: searchData.searchResults
-          }),
-        });
+      // Automatically analyze the results with AI
+      const analysisResponse = await fetch('/api/analyze-deals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: query.trim(),
+          country,
+          searchResults: searchData.searchResults
+        }),
+      });
 
-        if (!analysisResponse.ok) {
-          throw new Error(`Analysis error! status: ${analysisResponse.status}`);
-        }
-
-        const analysisData = await analysisResponse.json();
-        onAnalysis(analysisData);
-      } else {
-        // Return raw search results
-        onResults(searchData);
+      if (!analysisResponse.ok) {
+        throw new Error(`Analysis error! status: ${analysisResponse.status}`);
       }
+
+      const analysisData = await analysisResponse.json();
+      onAnalysis(analysisData);
       
       // Add to search history
       if (!searchHistory.includes(query.trim())) {
@@ -92,13 +81,12 @@ export function SearchForm({ onResults, onAnalysis, onError }: SearchFormProps) 
       onError(error instanceof Error ? error.message : 'Search failed');
     } finally {
       setLoading(false);
-      setAnalyzing(false);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      handleSearch(false);
+      handleSearch();
     }
   };
 
@@ -152,38 +140,19 @@ export function SearchForm({ onResults, onAnalysis, onError }: SearchFormProps) 
           </Select>
           
           <Button 
-            onClick={() => handleSearch(false)} 
-            disabled={loading || analyzing || !query.trim()}
-            className="h-12 px-6"
+            onClick={handleSearch} 
+            disabled={loading || !query.trim()}
+            className="h-12 px-8"
           >
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Searching...
-              </>
-            ) : (
-              <>
-                <Search className="w-4 h-4 mr-2" />
-                Search
-              </>
-            )}
-          </Button>
-          
-          <Button 
-            onClick={() => handleSearch(true)} 
-            disabled={loading || analyzing || !query.trim()}
-            className="h-12 px-6"
-            variant="outline"
-          >
-            {analyzing ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Analyzing...
+                Searching & Analyzing...
               </>
             ) : (
               <>
                 <Brain className="w-4 h-4 mr-2" />
-                AI Analyze
+                Find Best Deals
               </>
             )}
           </Button>
@@ -191,14 +160,14 @@ export function SearchForm({ onResults, onAnalysis, onError }: SearchFormProps) 
 
         {/* Search Info */}
         <div className="flex flex-wrap gap-2 text-sm text-gray-600">
-          <span>Available modes:</span>
+          <span>AI-powered search:</span>
           <Badge variant="outline">
-            <Zap className="w-3 h-3 mr-1" />
-            Quick Search - {RegionMapper.getSearchDomains(country).length} websites
+            <Search className="w-3 h-3 mr-1" />
+            100 results from {RegionMapper.getSearchDomains(country).length} websites
           </Badge>
           <Badge variant="outline">
             <Brain className="w-3 h-3 mr-1" />
-            AI Analysis - Smart deal finding
+            Smart filtering & analysis
           </Badge>
           <Badge variant="outline">
             {RegionMapper.getCurrency(country)} prices
@@ -215,7 +184,7 @@ export function SearchForm({ onResults, onAnalysis, onError }: SearchFormProps) 
                 variant="outline"
                 size="sm"
                 onClick={() => setQuery(term)}
-                disabled={loading || analyzing}
+                disabled={loading}
                 className="text-xs"
               >
                 {term}
@@ -235,7 +204,7 @@ export function SearchForm({ onResults, onAnalysis, onError }: SearchFormProps) 
                   variant="ghost"
                   size="sm"
                   onClick={() => setQuery(term)}
-                  disabled={loading || analyzing}
+                  disabled={loading}
                   className="text-xs text-gray-500"
                 >
                   {term}
