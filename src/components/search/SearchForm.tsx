@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search, Globe, Package, Loader2, Brain } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Search, Globe, Package, Loader2, Brain, Star, MapPin, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { AnalysisResponse } from '@/lib/types/product';
 import { RegionMapper } from '@/lib/services/regionMapper';
+import { getRegions, getCountriesByRegion } from '@/lib/data/globalCountries';
 
 interface SearchFormProps {
   onAnalysis: (analysis: AnalysisResponse) => void;
@@ -20,7 +22,32 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
   const [country, setCountry] = useState('US');
   const [loading, setLoading] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [selectedRegion, setSelectedRegion] = useState<string>('Popular');
 
+  // Get organized country data
+  const allCountries = RegionMapper.getAllCountries();
+  const popularCountries = allCountries.filter(c => c.popular);
+  const regions = getRegions();
+  
+  // Organize countries by regions
+  const countriesByRegion = useMemo(() => {
+    const organized: { [key: string]: Array<{code: string, name: string, popular: boolean}> } = {
+      'Popular': popularCountries
+    };
+    
+    regions.forEach(region => {
+      const regionCountries = getCountriesByRegion(region).map(country => ({
+        code: country.code,
+        name: country.name,
+        popular: country.popular
+      }));
+      organized[region] = regionCountries;
+    });
+    
+    return organized;
+  }, []);
+
+  const currentCountryInfo = allCountries.find(c => c.code === country);
   const supportedCountries = RegionMapper.getSupportedCountries();
 
   const handleSearch = async () => {
@@ -52,6 +79,13 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
 
       const searchData = await searchResponse.json();
       
+      // Use only available products for LLM analysis
+      const resultsToAnalyze = searchData.availableResults && searchData.availableResults.length > 0 
+        ? searchData.availableResults 
+        : searchData.searchResults;
+      
+      console.log(`Analyzing ${resultsToAnalyze.length} available products out of ${searchData.searchResultsCount} total results`);
+      
       // Automatically analyze the results with AI
       const analysisResponse = await fetch('/api/analyze-deals', {
         method: 'POST',
@@ -61,7 +95,8 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
         body: JSON.stringify({
           query: query.trim(),
           country,
-          searchResults: searchData.searchResults
+          searchResults: resultsToAnalyze,
+          availabilityStats: searchData.availabilityStats
         }),
       });
 
@@ -106,7 +141,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
           Global Price Comparison
         </CardTitle>
         <CardDescription>
-          Search for products across {supportedCountries.length}+ countries and find the best deals
+          Search for products across <strong>{supportedCountries.length} countries</strong> and find the best deals worldwide
         </CardDescription>
       </CardHeader>
       
@@ -126,15 +161,43 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
           </div>
           
           <Select value={country} onValueChange={setCountry} disabled={loading}>
-            <SelectTrigger className="w-48 h-12">
+            <SelectTrigger className="w-64 h-12">
               <Globe className="w-4 h-4 mr-2" />
               <SelectValue placeholder="Select country" />
             </SelectTrigger>
-            <SelectContent>
-              {supportedCountries.map((countryCode) => (
-                <SelectItem key={countryCode} value={countryCode}>
-                  {countryCode} - {RegionMapper.getCurrency(countryCode)}
-                </SelectItem>
+            <SelectContent className="max-h-96">
+              {Object.entries(countriesByRegion).map(([regionName, countries]) => (
+                <div key={regionName}>
+                  <div className="px-2 py-1.5 text-sm font-semibold text-gray-600 bg-gray-50 flex items-center gap-2">
+                    {regionName === 'Popular' ? (
+                      <><Star className="w-3 h-3" /> Popular Markets</>
+                    ) : (
+                      <><MapPin className="w-3 h-3" /> {regionName}</>
+                    )}
+                    <Badge variant="outline" className="text-xs ml-auto">
+                      {countries.length}
+                    </Badge>
+                  </div>
+                  {countries.map((countryItem) => (
+                    <SelectItem key={countryItem.code} value={countryItem.code} className="pl-6">
+                      <div className="flex items-center justify-between w-full">
+                        <span className="flex items-center gap-2">
+                          {countryItem.popular && regionName !== 'Popular' && (
+                            <Star className="w-3 h-3 text-yellow-500" />
+                          )}
+                          {countryItem.name}
+                        </span>
+                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                          <span>{countryItem.code}</span>
+                          <span>{RegionMapper.getCurrencySymbol(countryItem.code)}</span>
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                  {regionName !== Object.keys(countriesByRegion)[Object.keys(countriesByRegion).length - 1] && (
+                    <Separator className="my-1" />
+                  )}
+                </div>
               ))}
             </SelectContent>
           </Select>
@@ -159,19 +222,59 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
         </div>
 
         {/* Search Info */}
-        <div className="flex flex-wrap gap-2 text-sm text-gray-600">
-          <span>AI-powered search:</span>
-          <Badge variant="outline">
-            <Search className="w-3 h-3 mr-1" />
-            100 results from {RegionMapper.getSearchDomains(country).length} websites
-          </Badge>
-          <Badge variant="outline">
-            <Brain className="w-3 h-3 mr-1" />
-            Smart filtering & analysis
-          </Badge>
-          <Badge variant="outline">
-            {RegionMapper.getCurrency(country)} prices
-          </Badge>
+        <div className="space-y-3">
+          {/* Current Country Info */}
+          {currentCountryInfo && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-blue-900 flex items-center gap-2">
+                  <Globe className="w-4 h-4" />
+                  Searching in {currentCountryInfo.name}
+                </h4>
+                {currentCountryInfo.popular && (
+                  <Badge variant="default" className="bg-blue-600">
+                    <Star className="w-3 h-3 mr-1" />
+                    Popular Market
+                  </Badge>
+                )}
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <span className="text-blue-700 font-medium">Currency:</span>
+                  <div className="text-blue-900">{RegionMapper.getCurrencySymbol(country)} {RegionMapper.getCurrency(country)}</div>
+                </div>
+                <div>
+                  <span className="text-blue-700 font-medium">Websites:</span>
+                  <div className="text-blue-900">{RegionMapper.getSearchDomains(country).length} retailers</div>
+                </div>
+                <div>
+                  <span className="text-blue-700 font-medium">Language:</span>
+                  <div className="text-blue-900">{RegionMapper.getLanguage(country).split('-')[0].toUpperCase()}</div>
+                </div>
+                <div>
+                  <span className="text-blue-700 font-medium">Region:</span>
+                  <div className="text-blue-900">{currentCountryInfo.name.split(' ')[0]}</div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Search Capabilities */}
+          <div className="flex flex-wrap gap-2 text-sm text-gray-600">
+            <span>AI-powered search:</span>
+            <Badge variant="outline">
+              <Search className="w-3 h-3 mr-1" />
+              100 results from {RegionMapper.getSearchDomains(country).length} websites
+            </Badge>
+            <Badge variant="outline">
+              <Brain className="w-3 h-3 mr-1" />
+              Smart filtering & analysis
+            </Badge>
+            <Badge variant="outline">
+              <TrendingUp className="w-3 h-3 mr-1" />
+              {RegionMapper.getCurrencySymbol(country)} prices
+            </Badge>
+          </div>
         </div>
 
         {/* Quick Search Terms */}

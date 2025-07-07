@@ -56,6 +56,7 @@ Transform raw, unfiltered search results into a curated selection of the absolut
 - **Hidden Costs**: Shipping, handling, or membership fees that negate savings
 - **Out of Stock**: Unavailable items or backorder situations
 - **Poor Reviews**: Products with consistently negative feedback
+- **CRITICAL**: Non-purchasable links, informational pages, or unavailable products
 
 ## ADVANCED ANALYSIS TECHNIQUES
 

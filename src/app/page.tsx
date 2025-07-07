@@ -3,14 +3,17 @@
 import React, { useState } from 'react';
 import { SearchForm } from '@/components/search/SearchForm';
 import { AnalyzedDealsList } from '@/components/search/AnalyzedDealsList';
+import { GlobalCoverage } from '@/components/search/GlobalCoverage';
 import { AnalysisResponse } from '@/lib/types/product';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Brain } from 'lucide-react';
+import { AlertCircle, Brain, Globe } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showGlobalCoverage, setShowGlobalCoverage] = useState(false);
 
   const handleAnalysis = (analysisResults: AnalysisResponse) => {
     setAnalysis(analysisResults);
@@ -49,38 +52,69 @@ export default function Home() {
         {/* Results Display */}
         {analysis && <AnalyzedDealsList analysis={analysis} />}
         
-        {/* Feature Highlights */}
+        {/* Global Coverage or Feature Highlights */}
         {!analysis && !error && (
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🌍</span>
+          <div className="max-w-6xl mx-auto mt-16">
+            {showGlobalCoverage ? (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Global Coverage</h2>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowGlobalCoverage(false)}
+                  >
+                    Show Features
+                  </Button>
+                </div>
+                <GlobalCoverage />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Global Search</h3>
-              <p className="text-gray-600 text-sm">
-                Search across 195+ countries and 1000+ websites for the best deals worldwide.
-              </p>
-            </div>
-            
-            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🤖</span>
+            ) : (
+              <div className="space-y-8">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Why Choose Our Platform?</h2>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowGlobalCoverage(true)}
+                    className="flex items-center gap-2"
+                  >
+                    <Globe className="w-4 h-4" />
+                    View Global Coverage
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center p-6 bg-white rounded-lg shadow-sm border">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🌍</span>
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Global Search</h3>
+                    <p className="text-gray-600 text-sm">
+                      Search across <strong>195+ countries</strong> and <strong>1000+ websites</strong> for the best deals worldwide.
+                    </p>
+                  </div>
+                  
+                  <div className="text-center p-6 bg-white rounded-lg shadow-sm border">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🤖</span>
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">AI-Powered</h3>
+                    <p className="text-gray-600 text-sm">
+                      Advanced AI filters <strong>100+ search results</strong> to show only the best deals and relevant products.
+                    </p>
+                  </div>
+                  
+                  <div className="text-center p-6 bg-white rounded-lg shadow-sm border">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">⚡</span>
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Smart Deal Analysis</h3>
+                    <p className="text-gray-600 text-sm">
+                      AI analyzes prices, discounts, and seller reputation to rank deals by <strong>quality</strong>.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">AI-Powered</h3>
-              <p className="text-gray-600 text-sm">
-                Advanced AI filters 100+ search results to show only the best deals and relevant products.
-              </p>
-            </div>
-            
-            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">⚡</span>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Smart Deal Analysis</h3>
-              <p className="text-gray-600 text-sm">
-                AI analyzes prices, discounts, and seller reputation to rank deals by quality.
-              </p>
-            </div>
+            )}
           </div>
         )}
       </div>

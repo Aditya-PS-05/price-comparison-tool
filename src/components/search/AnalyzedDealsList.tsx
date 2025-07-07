@@ -13,8 +13,13 @@ import {
   AlertCircle,
   TrendingUp,
   Award,
-  Star
+  Star,
+  Globe,
+  MapPin,
+  Zap
 } from 'lucide-react';
+import { RegionMapper } from '@/lib/services/regionMapper';
+import { getCountryInfo } from '@/lib/data/globalCountries';
 
 interface AnalyzedDealsListProps {
   analysis: AnalysisResponse;
@@ -84,6 +89,51 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          {/* Country Context */}
+          {(() => {
+            const countryInfo = getCountryInfo(analysis.country);
+            return countryInfo ? (
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-purple-900 flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    Results for {countryInfo.name}
+                  </h4>
+                  <div className="flex items-center gap-2">
+                    {countryInfo.popular && (
+                      <Badge variant="default" className="bg-purple-600 text-xs">
+                        <Star className="w-3 h-3 mr-1" />
+                        Major Market
+                      </Badge>
+                    )}
+                    <Badge variant="outline" className="text-xs">
+                      <MapPin className="w-3 h-3 mr-1" />
+                      {countryInfo.region}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                  <div>
+                    <span className="text-purple-700 font-medium">Currency:</span>
+                    <div className="text-purple-900 font-semibold">{countryInfo.currencySymbol} {countryInfo.currency}</div>
+                  </div>
+                  <div>
+                    <span className="text-purple-700 font-medium">Retailers:</span>
+                    <div className="text-purple-900 font-semibold">{RegionMapper.getSearchDomains(analysis.country).length} sites</div>
+                  </div>
+                  <div>
+                    <span className="text-purple-700 font-medium">Language:</span>
+                    <div className="text-purple-900 font-semibold">{countryInfo.language.toUpperCase()}</div>
+                  </div>
+                  <div>
+                    <span className="text-purple-700 font-medium">Search Engine:</span>
+                    <div className="text-purple-900 font-semibold">{analysis.searchEngineUsed}</div>
+                  </div>
+                </div>
+              </div>
+            ) : null;
+          })()}
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-4">
             <div>
               <div className="text-2xl font-bold text-blue-600">{analysis.totalResults}</div>
@@ -134,8 +184,11 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
           </div>
 
           {/* AI Summary */}
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <div className="text-sm font-medium text-purple-800 mb-1">AI Summary:</div>
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 p-4 rounded-lg">
+            <div className="text-sm font-medium text-purple-800 mb-1 flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              AI Analysis Summary:
+            </div>
             <div className="text-sm text-purple-700">{analysis.summary}</div>
           </div>
         </CardContent>

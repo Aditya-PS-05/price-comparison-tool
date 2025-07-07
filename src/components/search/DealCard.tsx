@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ExternalLink, Star, TrendingUp, TrendingDown, ShoppingCart, Award, ImageIcon } from 'lucide-react';
+import { ExternalLink, Star, TrendingUp, TrendingDown, ShoppingCart, Award, ImageIcon, Globe, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -51,6 +51,40 @@ export function DealCard({ deal, rank }: DealCardProps) {
   };
 
   const isTopDeal = deal.dealQuality === 'excellent' || rank <= 3;
+  
+  // Extract domain for retailer identification
+  const getDomain = (url: string) => {
+    try {
+      return new URL(url).hostname.replace('www.', '');
+    } catch {
+      return deal.seller;
+    }
+  };
+  
+  // Get region indicator based on domain
+  const getRegionFromDomain = (domain: string) => {
+    if (domain.includes('.com.au')) return 'AU';
+    if (domain.includes('.co.uk')) return 'GB';
+    if (domain.includes('.ca')) return 'CA';
+    if (domain.includes('.de')) return 'DE';
+    if (domain.includes('.fr')) return 'FR';
+    if (domain.includes('.it')) return 'IT';
+    if (domain.includes('.es')) return 'ES';
+    if (domain.includes('.com.br')) return 'BR';
+    if (domain.includes('.co.jp')) return 'JP';
+    if (domain.includes('.co.kr')) return 'KR';
+    if (domain.includes('.com.mx')) return 'MX';
+    if (domain.includes('.ae')) return 'AE';
+    if (domain.includes('.sa')) return 'SA';
+    if (domain.includes('.co.za')) return 'ZA';
+    if (domain.includes('.com.sg')) return 'SG';
+    if (domain.includes('.co.in')) return 'IN';
+    if (domain.includes('.com.cn')) return 'CN';
+    return null;
+  };
+  
+  const domain = getDomain(deal.url);
+  const regionCode = getRegionFromDomain(domain);
 
   return (
     <Card className={`hover:shadow-lg transition-all duration-200 ${isTopDeal ? 'ring-2 ring-green-500' : ''}`}>
@@ -98,6 +132,12 @@ export function DealCard({ deal, rank }: DealCardProps) {
               <Badge variant="outline" className="text-xs">
                 {Math.round(deal.relevanceScore * 100)}% match
               </Badge>
+              {regionCode && (
+                <Badge variant="secondary" className="text-xs">
+                  <Globe className="w-3 h-3 mr-1" />
+                  {regionCode}
+                </Badge>
+              )}
             </div>
             <h3 className="font-semibold text-lg line-clamp-2 mb-2 hover:text-blue-600 cursor-pointer" onClick={handleDealClick}>
               {deal.title}
@@ -116,24 +156,40 @@ export function DealCard({ deal, rank }: DealCardProps) {
                   {deal.price}
                 </span>
                 {deal.discount && (
-                  <span className="text-sm text-red-600 font-medium">
+                  <span className="text-sm text-red-600 font-medium bg-red-50 px-2 py-1 rounded">
                     {deal.discount}
                   </span>
                 )}
               </div>
             )}
             {deal.availability && (
-              <div className="text-sm text-gray-600 mt-1">
+              <div className={`text-sm mt-1 flex items-center gap-1 ${
+                deal.availability.toLowerCase().includes('stock') ? 'text-green-600' : 'text-orange-600'
+              }`}>
+                <div className={`w-2 h-2 rounded-full ${
+                  deal.availability.toLowerCase().includes('stock') ? 'bg-green-500' : 'bg-orange-500'
+                }`} />
                 {deal.availability}
               </div>
             )}
           </div>
           
           <div className="text-right">
-            <div className="text-sm font-medium text-gray-800">{deal.seller}</div>
-            {deal.currency && (
-              <div className="text-xs text-gray-500">{deal.currency}</div>
-            )}
+            <div className="text-sm font-medium text-gray-800 flex items-center gap-1">
+              {deal.seller}
+              {regionCode && (
+                <Badge variant="outline" className="text-xs">
+                  {regionCode}
+                </Badge>
+              )}
+            </div>
+            <div className="text-xs text-gray-500 flex items-center gap-1">
+              {deal.currency && (
+                <span className="font-mono">{deal.currency}</span>
+              )}
+              <span>•</span>
+              <span className="truncate max-w-20" title={domain}>{domain}</span>
+            </div>
           </div>
         </div>
 
@@ -161,7 +217,7 @@ export function DealCard({ deal, rank }: DealCardProps) {
             variant={isTopDeal ? "default" : "outline"}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
-            Shop Now at {deal.seller}
+            {regionCode ? `Shop ${regionCode}` : `Shop at ${deal.seller}`}
           </Button>
           <Button 
             variant="ghost" 

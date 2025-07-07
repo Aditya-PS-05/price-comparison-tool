@@ -1,5 +1,6 @@
 import { ApiService, SearchResult } from './apiService';
 import { RegionMapper } from './regionMapper';
+import { ProductAvailabilityChecker, SearchResultWithAvailability } from './productAvailabilityChecker';
 
 export interface SearchOptions {
   maxResults?: number;
@@ -11,8 +12,15 @@ export interface SearchContext {
   query: string;
   country: string;
   searchResults: SearchResult[];
+  availableResults?: SearchResultWithAvailability[];
   searchEngine: string;
   timestamp: string;
+  availabilityStats?: {
+    total: number;
+    available: number;
+    withPrice: number;
+    highConfidence: number;
+  };
 }
 
 export class SearchService {
@@ -32,8 +40,9 @@ export class SearchService {
       const regionalSites = RegionMapper.getSearchDomains(countryCode);
       const region = this.getRegionName(countryCode);
       
-      // Build search query with site restrictions
-      const searchQuery = `${query} price buy ${region} 2024 site:${regionalSites.join(' OR site:')}`;
+      // Build localized search query with site restrictions
+      const localizedQuery = RegionMapper.getLocalizedSearchQuery(query, countryCode);
+      const searchQuery = `${localizedQuery} price ${new Date().getFullYear()} site:${regionalSites.join(' OR site:')}`;
       
       // Try Google Custom Search first, then SerpAPI
       let searchResults: SearchResult[] = [];
@@ -59,12 +68,21 @@ export class SearchService {
       
       console.log(`Found ${searchResults.length} search results for "${query}" in ${country}`);
       
+      // Check availability of products
+      const resultsWithAvailability = await ProductAvailabilityChecker.batchAvailabilityCheck(searchResults);
+      const availableResults = ProductAvailabilityChecker.filterAvailableProducts(resultsWithAvailability, 0.5);
+      const availabilityStats = ProductAvailabilityChecker.getAvailabilitySummary(resultsWithAvailability);
+      
+      console.log(`Availability: ${availabilityStats.available}/${availabilityStats.total} available products`);
+      
       return {
         query,
         country: countryCode,
         searchResults,
+        availableResults,
         searchEngine,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        availabilityStats
       };
     } catch (error) {
       console.error('Web search error:', error);
@@ -72,8 +90,10 @@ export class SearchService {
         query,
         country: country.toUpperCase(),
         searchResults: [],
+        availableResults: [],
         searchEngine: 'error',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        availabilityStats: { total: 0, available: 0, withPrice: 0, highConfidence: 0 }
       };
     }
   }
@@ -83,18 +103,38 @@ export class SearchService {
     country: string;
     searchResultsCount: number;
     searchResults: SearchResult[];
+    availableResultsCount: number;
+    availableResults: SearchResult[];
     searchEngineUsed: string;
     timestamp: string;
+    availabilityStats?: {
+      total: number;
+      available: number;
+      withPrice: number;
+      highConfidence: number;
+    };
   }> {
     const searchContext = await this.performWebSearch(query, country);
+    
+    // Convert available results back to SearchResult format
+    const availableResults: SearchResult[] = searchContext.availableResults?.map(result => ({
+      title: result.title,
+      url: result.url,
+      snippet: result.snippet,
+      image: result.image,
+      thumbnail: result.thumbnail
+    })) || [];
     
     return {
       query: searchContext.query,
       country: searchContext.country,
       searchResultsCount: searchContext.searchResults.length,
       searchResults: searchContext.searchResults,
+      availableResultsCount: availableResults.length,
+      availableResults,
       searchEngineUsed: searchContext.searchEngine,
-      timestamp: searchContext.timestamp
+      timestamp: searchContext.timestamp,
+      availabilityStats: searchContext.availabilityStats
     };
   }
 
