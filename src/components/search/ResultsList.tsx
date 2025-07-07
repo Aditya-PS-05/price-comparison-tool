@@ -20,7 +20,7 @@ interface ResultsListProps {
 
 export function ResultsList({ results }: ResultsListProps) {
   const [sortBy, setSortBy] = useState<'relevance' | 'title'>('relevance');
-  const [filterDomain, setFilterDomain] = useState<string>('');
+  const [filterDomain, setFilterDomain] = useState<string>('all');
 
   // Sort results based on selected criteria
   const sortedResults = [...results.searchResults].sort((a, b) => {
@@ -34,7 +34,7 @@ export function ResultsList({ results }: ResultsListProps) {
   });
 
   // Filter by domain if specified
-  const filteredResults = filterDomain 
+  const filteredResults = filterDomain && filterDomain !== 'all'
     ? sortedResults.filter(result => result.url.includes(filterDomain))
     : sortedResults;
 
@@ -102,7 +102,7 @@ export function ResultsList({ results }: ResultsListProps) {
                 <SelectValue placeholder="Filter by site" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Sites</SelectItem>
+                <SelectItem value="all">All Sites</SelectItem>
                 <SelectItem value="apple.com">Apple</SelectItem>
                 <SelectItem value="bestbuy.com">Best Buy</SelectItem>
                 <SelectItem value="amazon.com">Amazon</SelectItem>
