@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
-import { ExternalLink, Star, TrendingUp, TrendingDown, ShoppingCart, Award } from 'lucide-react';
+import React, { useState } from 'react';
+import { ExternalLink, Star, TrendingUp, TrendingDown, ShoppingCart, Award, ImageIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AnalyzedDeal } from '@/lib/types/product';
+import Image from 'next/image';
 
 interface DealCardProps {
   deal: AnalyzedDeal;
@@ -13,8 +14,20 @@ interface DealCardProps {
 }
 
 export function DealCard({ deal, rank }: DealCardProps) {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+
   const handleDealClick = () => {
     window.open(deal.url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoading(false);
+  };
+
+  const handleImageLoad = () => {
+    setImageLoading(false);
   };
 
   const getQualityIcon = (quality: string) => {
@@ -42,9 +55,39 @@ export function DealCard({ deal, rank }: DealCardProps) {
   return (
     <Card className={`hover:shadow-lg transition-all duration-200 ${isTopDeal ? 'ring-2 ring-green-500' : ''}`}>
       <CardHeader className="pb-3">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
+        <div className="flex gap-4">
+          {/* Product Image */}
+          <div className="flex-shrink-0">
+            {(deal.image || deal.thumbnail) && !imageError ? (
+              <div className="relative w-24 h-24 bg-gray-100 rounded-lg overflow-hidden">
+                <Image
+                  src={deal.image || deal.thumbnail || ''}
+                  alt={deal.title}
+                  fill
+                  className="object-cover"
+                  onError={handleImageError}
+                  onLoad={handleImageLoad}
+                  sizes="96px"
+                  priority={rank <= 3} // Prioritize loading for top 3 deals
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                />
+                {imageLoading && (
+                  <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+                    <ImageIcon className="w-6 h-6 text-gray-400" />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                <ImageIcon className="w-8 h-8 text-gray-400" />
+              </div>
+            )}
+          </div>
+
+          {/* Product Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
               <Badge variant="secondary" className="text-xs">
                 #{rank}
               </Badge>

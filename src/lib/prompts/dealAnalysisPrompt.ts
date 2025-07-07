@@ -173,6 +173,7 @@ For each qualified deal, provide:
 - Specific reasons why this deal stands out
 - Any time sensitivity or availability constraints
 - Who would benefit most from this offer
+- Include product image if available for visual appeal
 
 Return results in this JSON structure:
 {
@@ -187,6 +188,8 @@ Return results in this JSON structure:
       "seller": "Retailer name",
       "relevanceScore": 0.95,
       "dealQuality": "excellent",
+      "image": "Product image URL if available",
+      "thumbnail": "Thumbnail image URL if available", 
       "reasons": [
         "Specific reason why this is valuable",
         "Competitive advantage or unique benefit",
@@ -204,6 +207,8 @@ interface SearchResult {
   title: string;
   url: string;
   snippet: string;
+  image?: string;
+  thumbnail?: string;
 }
 
 export const getDealAnalysisPrompt = (query: string, country: string, searchResults: SearchResult[]) => {
@@ -211,7 +216,7 @@ export const getDealAnalysisPrompt = (query: string, country: string, searchResu
   const searchResultsText = searchResults.map((result, index) => `
 ${index + 1}. Title: ${result.title}
    URL: ${result.url}
-   Snippet: ${result.snippet}
+   Snippet: ${result.snippet}${result.image ? `\n   Image: ${result.image}` : ''}${result.thumbnail ? `\n   Thumbnail: ${result.thumbnail}` : ''}
 `).join('\n');
 
   return {

@@ -3,6 +3,8 @@ export interface SearchResult {
   title: string;
   url: string;
   snippet: string;
+  image?: string;
+  thumbnail?: string;
 }
 
 // Enhanced product data structure (for future use)
@@ -67,6 +69,8 @@ export interface AnalyzedDeal {
   relevanceScore: number;
   dealQuality: 'excellent' | 'good' | 'average' | 'poor';
   reasons: string[];
+  image?: string;
+  thumbnail?: string;
 }
 
 // LLM analysis response

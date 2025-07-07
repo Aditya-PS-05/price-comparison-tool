@@ -4,6 +4,8 @@ export interface SearchResult {
   title: string;
   url: string;
   snippet: string;
+  image?: string;
+  thumbnail?: string;
 }
 
 export interface GoogleSearchParams {
@@ -43,14 +45,20 @@ export class ApiService {
           q: params.query,
           num: params.maxResults || 10,
           cr: `country${params.country}`,
-          gl: params.country.toLowerCase()
+          gl: params.country.toLowerCase(),
+          searchType: undefined, // Keep web search, not image search
+          imgSize: 'medium',
+          imgType: 'photo',
+          safe: 'medium'
         }
       });
 
-      return response.data.items?.map((item: { title: string; link: string; snippet: string }) => ({
+      return response.data.items?.map((item: any) => ({
         title: item.title,
         url: item.link,
-        snippet: item.snippet
+        snippet: item.snippet,
+        image: item.pagemap?.cse_image?.[0]?.src || item.pagemap?.metatags?.[0]?.['og:image'],
+        thumbnail: item.pagemap?.cse_thumbnail?.[0]?.src
       })) || [];
     } catch (error) {
       console.error('Google Search API error:', error);
@@ -76,10 +84,12 @@ export class ApiService {
         }
       });
 
-      return response.data.organic_results?.map((item: { title: string; link: string; snippet: string }) => ({
+      return response.data.organic_results?.map((item: any) => ({
         title: item.title,
         url: item.link,
-        snippet: item.snippet
+        snippet: item.snippet,
+        image: item.thumbnail,
+        thumbnail: item.thumbnail
       })) || [];
     } catch (error) {
       console.error('SerpAPI error:', error);
