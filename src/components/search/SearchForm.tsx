@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ProductSearchRequest, ProductSearchResponse } from '@/lib/types/product';
+import { ProductSearchResponse } from '@/lib/types/product';
 import { RegionMapper } from '@/lib/services/regionMapper';
 
 interface SearchFormProps {
@@ -21,7 +21,7 @@ export function SearchForm({ onResults, onError }: SearchFormProps) {
   const [loading, setLoading] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
-  const supportedCountries = RegionMapper.getAllSupportedCountries();
+  const supportedCountries = RegionMapper.getSupportedCountries();
 
   const handleSearch = async () => {
     if (!query.trim()) {
@@ -32,17 +32,13 @@ export function SearchForm({ onResults, onError }: SearchFormProps) {
     setLoading(true);
     
     try {
-      const searchRequest: ProductSearchRequest = {
+      const searchRequest = {
         country,
-        query: query.trim(),
-        options: {
-          maxResults: 20,
-          includeShipping: true,
-          minRating: 3.0
-        }
+        query: query.trim()
       };
 
-      const response = await fetch('/api/search', {
+      // Use the actual server endpoint
+      const response = await fetch('http://localhost:8000/api/test-search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,15 +52,12 @@ export function SearchForm({ onResults, onError }: SearchFormProps) {
 
       const data = await response.json();
       
-      if (data.success) {
-        onResults(data.data);
-        
-        // Add to search history
-        if (!searchHistory.includes(query.trim())) {
-          setSearchHistory(prev => [query.trim(), ...prev.slice(0, 4)]);
-        }
-      } else {
-        onError(data.error || 'Search failed');
+      // The API returns data directly, no wrapper
+      onResults(data);
+      
+      // Add to search history
+      if (!searchHistory.includes(query.trim())) {
+        setSearchHistory(prev => [query.trim(), ...prev.slice(0, 4)]);
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -152,7 +145,7 @@ export function SearchForm({ onResults, onError }: SearchFormProps) {
         <div className="flex flex-wrap gap-2 text-sm text-gray-600">
           <span>Searching:</span>
           <Badge variant="outline">
-            {RegionMapper.getRegionalSites(country).length} websites
+            {RegionMapper.getSearchDomains(country).length} websites
           </Badge>
           <Badge variant="outline">
             {RegionMapper.getCurrency(country)} prices

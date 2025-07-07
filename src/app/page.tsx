@@ -57,7 +57,7 @@ export default function Home() {
               </div>
               <h3 className="text-lg font-semibold mb-2">AI-Powered</h3>
               <p className="text-gray-600 text-sm">
-                Advanced AI understands your queries and finds exactly what you're looking for.
+                Advanced AI understands your queries and finds exactly what you&apos;re looking for.
               </p>
             </div>
             

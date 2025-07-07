@@ -1,3 +1,11 @@
+// Search result from the actual API response
+export interface SearchResult {
+  title: string;
+  url: string;
+  snippet: string;
+}
+
+// Enhanced product data structure (for future use)
 export interface Product {
   productName: string;
   price: string;
@@ -38,7 +46,17 @@ export interface ProductSearchRequest {
   };
 }
 
+// Current API response format
 export interface ProductSearchResponse {
+  query: string;
+  country: string;
+  searchResultsCount: number;
+  searchResults: SearchResult[];
+  searchEngineUsed: string;
+}
+
+// Enhanced search response (for future use)
+export interface EnhancedProductSearchResponse {
   query: string;
   country: string;
   resultsCount: number;
