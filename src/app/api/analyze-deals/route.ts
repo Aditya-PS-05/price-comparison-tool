@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { getDealAnalysisPrompt } from '@/lib/prompts/dealAnalysisPrompt';
 
 // Input validation schema
 const analyzeRequestSchema = z.object({
@@ -57,63 +58,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Prepare the prompt for OpenAI
-    const systemPrompt = `You are an expert deal analyzer and price comparison specialist. 
-    
-Your task is to analyze search results and extract ONLY the best and most relevant shopping deals for a specific product query.
-
-STRICT FILTERING GUIDELINES:
-1. ONLY include results that are directly relevant to the searched product
-2. EXCLUDE: App store listings, informational pages, news articles, reviews, unrelated products
-3. INCLUDE ONLY: Actual shopping sites with clear product listings
-4. Focus on deals with good prices, discounts, or high-quality retailers
-5. Rate deal quality as 'excellent' for great prices/discounts, 'good' for fair deals
-6. DO NOT include 'poor' or 'average' deals - only show the best options
-7. Extract actual prices when visible in snippets
-8. Prioritize well-known, reputable retailers
-
-QUALITY STANDARDS:
-- Excellent: Clear discount, competitive price, reputable seller
-- Good: Fair price, decent seller, good availability
-- DO NOT INCLUDE: Poor or average quality deals
-
-Return only the top deals that users should actually consider buying.`;
-
-    const userPrompt = `Search Query: "${query}"
-Country: ${country}
-
-Search Results to Analyze:
-${searchResults.map((result, index) => `
-${index + 1}. Title: ${result.title}
-   URL: ${result.url}
-   Snippet: ${result.snippet}
-`).join('\n')}
-
-Please analyze these results and return a JSON object with this structure:
-{
-  "deals": [
-    {
-      "title": "Product title",
-      "url": "Product URL", 
-      "price": "Price if found (e.g., '$299')",
-      "currency": "Currency code (e.g., 'USD')",
-      "discount": "Discount info if any (e.g., '20% off')",
-      "availability": "Stock status (e.g., 'In Stock')",
-      "seller": "Retailer name",
-      "relevanceScore": 0.95,
-      "dealQuality": "excellent|good|average|poor",
-      "reasons": ["Why this is a good/bad deal"]
-    }
-  ],
-  "summary": "Brief summary of the best deals found"
-}
-
-IMPORTANT: Only include EXCELLENT and GOOD quality deals that are directly relevant to buying "${query}". 
-- Completely exclude app store listings, informational pages, news articles, and unrelated products
-- Focus on actual shopping opportunities with competitive prices
-- If a result doesn't clearly offer the product for sale, exclude it
-- Prioritize deals with visible prices, discounts, or from reputable retailers
-- Maximum 20 best deals only`;
+    // Get the comprehensive deal analysis prompt
+    const { systemPrompt, userPrompt } = getDealAnalysisPrompt(query, country, searchResults);
 
     // Call OpenAI API
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -123,13 +69,13 @@ IMPORTANT: Only include EXCELLENT and GOOD quality deals that are directly relev
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
         temperature: 0.1,
-        max_tokens: 2000,
+        max_tokens: 4000,
         response_format: { type: "json_object" }
       }),
     });
