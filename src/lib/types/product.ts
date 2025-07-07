@@ -55,6 +55,31 @@ export interface ProductSearchResponse {
   searchEngineUsed: string;
 }
 
+// LLM analyzed deal structure
+export interface AnalyzedDeal {
+  title: string;
+  url: string;
+  price?: string;
+  currency?: string;
+  discount?: string;
+  availability?: string;
+  seller: string;
+  relevanceScore: number;
+  dealQuality: 'excellent' | 'good' | 'average' | 'poor';
+  reasons: string[];
+}
+
+// LLM analysis response
+export interface AnalysisResponse {
+  query: string;
+  country: string;
+  totalResults: number;
+  relevantResults: number;
+  deals: AnalyzedDeal[];
+  summary: string;
+  searchEngineUsed: string;
+}
+
 // Enhanced search response (for future use)
 export interface EnhancedProductSearchResponse {
   query: string;
