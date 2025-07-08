@@ -1,7 +1,5 @@
 import NextAuth from 'next-auth'
 import type { NextAuthOptions } from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
-import GitHubProvider from 'next-auth/providers/github'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
@@ -15,14 +13,6 @@ const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-    }),
-    GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID || '',
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
-    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -85,7 +75,6 @@ const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: '/auth/signin',
-    newUser: '/auth/signup',
   },
   session: {
     strategy: 'jwt',
@@ -94,7 +83,6 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn() {
       // This callback runs whenever a user signs in
-      // For OAuth providers, user data will be automatically stored via Prisma adapter
       // For credentials, we handle it in the authorize function
       return true
     },

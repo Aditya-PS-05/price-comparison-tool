@@ -9,8 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
-import { Package, Mail, Github, Eye, EyeOff } from 'lucide-react'
+import { Package, Eye, EyeOff } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function SignInPage() {
@@ -47,15 +46,6 @@ export default function SignInPage() {
     }
   }
 
-  const handleOAuthSignIn = async (provider: 'google' | 'github') => {
-    setLoading(true)
-    try {
-      await signIn(provider, { callbackUrl: '/dashboard' })
-    } catch {
-      setError('Failed to sign in with ' + provider)
-      setLoading(false)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-[#0D0F17] flex items-center justify-center p-4">
@@ -78,37 +68,6 @@ export default function SignInPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <Button
-                variant="outline"
-                className="w-full bg-white hover:bg-gray-100 text-black border-gray-300"
-                onClick={() => handleOAuthSignIn('google')}
-                disabled={loading}
-              >
-                <Mail className="w-4 h-4 mr-2" />
-                Continue with Google
-              </Button>
-
-              <Button
-                variant="outline"
-                className="w-full bg-gray-900 hover:bg-gray-800 text-white border-gray-600"
-                onClick={() => handleOAuthSignIn('github')}
-                disabled={loading}
-              >
-                <Github className="w-4 h-4 mr-2" />
-                Continue with GitHub
-              </Button>
-            </div>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <Separator className="w-full" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-gray-800 px-2 text-gray-400">Or continue with</span>
-              </div>
-            </div>
-
             <form onSubmit={handleCredentialsSignIn} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-gray-300">Email</Label>
