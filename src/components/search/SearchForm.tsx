@@ -134,14 +134,14 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
   ];
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full max-w-4xl mx-auto bg-gray-800/50 border-gray-700 text-white">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold flex items-center justify-center gap-2">
-          <Package className="w-8 h-8 text-blue-600" />
+        <CardTitle className="text-3xl font-bold flex items-center justify-center gap-2 text-white">
+          <Package className="w-8 h-8 text-blue-400" />
           Global Price Comparison
         </CardTitle>
-        <CardDescription>
-          Search for products across <strong>{supportedCountries.length} countries</strong> and find the best deals worldwide
+        <CardDescription className="text-gray-300">
+          Search for products across <strong className="text-white">{supportedCountries.length} countries</strong> and find the best deals worldwide
         </CardDescription>
       </CardHeader>
       
@@ -155,39 +155,39 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="pl-10 text-lg h-12"
+              className="pl-10 text-lg h-12 bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
               disabled={loading}
             />
           </div>
           
           <Select value={country} onValueChange={setCountry} disabled={loading}>
-            <SelectTrigger className="w-64 h-12">
-              <Globe className="w-4 h-4 mr-2" />
+            <SelectTrigger className="w-64 h-12 bg-gray-700 border-gray-600 text-white">
+              <Globe className="w-4 h-4 mr-2 text-gray-400" />
               <SelectValue placeholder="Select country" />
             </SelectTrigger>
-            <SelectContent className="max-h-96">
+            <SelectContent className="max-h-96 bg-gray-800 border-gray-700 text-white">
               {Object.entries(countriesByRegion).map(([regionName, countries]) => (
                 <div key={regionName}>
-                  <div className="px-2 py-1.5 text-sm font-semibold text-gray-600 bg-gray-50 flex items-center gap-2">
+                  <div className="px-2 py-1.5 text-sm font-semibold text-gray-300 bg-gray-700 flex items-center gap-2">
                     {regionName === 'Popular' ? (
-                      <><Star className="w-3 h-3" /> Popular Markets</>
+                      <><Star className="w-3 h-3 text-yellow-400" /> Popular Markets</>
                     ) : (
-                      <><MapPin className="w-3 h-3" /> {regionName}</>
+                      <><MapPin className="w-3 h-3 text-blue-400" /> {regionName}</>
                     )}
-                    <Badge variant="outline" className="text-xs ml-auto">
+                    <Badge variant="outline" className="text-xs ml-auto bg-gray-600 border-gray-500 text-gray-300">
                       {countries.length}
                     </Badge>
                   </div>
                   {countries.map((countryItem) => (
-                    <SelectItem key={countryItem.code} value={countryItem.code} className="pl-6">
+                    <SelectItem key={countryItem.code} value={countryItem.code} className="pl-6 text-white hover:bg-gray-700 focus:bg-gray-700">
                       <div className="flex items-center justify-between w-full">
                         <span className="flex items-center gap-2">
                           {countryItem.popular && regionName !== 'Popular' && (
-                            <Star className="w-3 h-3 text-yellow-500" />
+                            <Star className="w-3 h-3 text-yellow-400" />
                           )}
                           {countryItem.name}
                         </span>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <div className="flex items-center gap-2 text-xs text-gray-400">
                           <span>{countryItem.code}</span>
                           <span>{RegionMapper.getCurrencySymbol(countryItem.code)}</span>
                         </div>
@@ -195,7 +195,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
                     </SelectItem>
                   ))}
                   {regionName !== Object.keys(countriesByRegion)[Object.keys(countriesByRegion).length - 1] && (
-                    <Separator className="my-1" />
+                    <Separator className="my-1 bg-gray-600" />
                   )}
                 </div>
               ))}
@@ -205,7 +205,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
           <Button 
             onClick={handleSearch} 
             disabled={loading || !query.trim()}
-            className="h-12 px-8"
+            className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white"
           >
             {loading ? (
               <>
@@ -225,14 +225,14 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
         <div className="space-y-3">
           {/* Current Country Info */}
           {currentCountryInfo && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-blue-600/20 border border-blue-600/30 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-blue-900 flex items-center gap-2">
+                <h4 className="font-semibold text-blue-300 flex items-center gap-2">
                   <Globe className="w-4 h-4" />
                   Searching in {currentCountryInfo.name}
                 </h4>
                 {currentCountryInfo.popular && (
-                  <Badge variant="default" className="bg-blue-600">
+                  <Badge variant="default" className="bg-blue-600 text-white">
                     <Star className="w-3 h-3 mr-1" />
                     Popular Market
                   </Badge>
@@ -240,37 +240,37 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
-                  <span className="text-blue-700 font-medium">Currency:</span>
-                  <div className="text-blue-900">{RegionMapper.getCurrencySymbol(country)} {RegionMapper.getCurrency(country)}</div>
+                  <span className="text-blue-400 font-medium">Currency:</span>
+                  <div className="text-blue-200">{RegionMapper.getCurrencySymbol(country)} {RegionMapper.getCurrency(country)}</div>
                 </div>
                 <div>
-                  <span className="text-blue-700 font-medium">Websites:</span>
-                  <div className="text-blue-900">{RegionMapper.getSearchDomains(country).length} retailers</div>
+                  <span className="text-blue-400 font-medium">Websites:</span>
+                  <div className="text-blue-200">{RegionMapper.getSearchDomains(country).length} retailers</div>
                 </div>
                 <div>
-                  <span className="text-blue-700 font-medium">Language:</span>
-                  <div className="text-blue-900">{RegionMapper.getLanguage(country).split('-')[0].toUpperCase()}</div>
+                  <span className="text-blue-400 font-medium">Language:</span>
+                  <div className="text-blue-200">{RegionMapper.getLanguage(country).split('-')[0].toUpperCase()}</div>
                 </div>
                 <div>
-                  <span className="text-blue-700 font-medium">Region:</span>
-                  <div className="text-blue-900">{currentCountryInfo.name.split(' ')[0]}</div>
+                  <span className="text-blue-400 font-medium">Region:</span>
+                  <div className="text-blue-200">{currentCountryInfo.name.split(' ')[0]}</div>
                 </div>
               </div>
             </div>
           )}
           
           {/* Search Capabilities */}
-          <div className="flex flex-wrap gap-2 text-sm text-gray-600">
+          <div className="flex flex-wrap gap-2 text-sm text-gray-300">
             <span>AI-powered search:</span>
-            <Badge variant="outline">
+            <Badge variant="outline" className="bg-gray-700/50 border-gray-600 text-gray-300">
               <Search className="w-3 h-3 mr-1" />
               100 results from {RegionMapper.getSearchDomains(country).length} websites
             </Badge>
-            <Badge variant="outline">
+            <Badge variant="outline" className="bg-gray-700/50 border-gray-600 text-gray-300">
               <Brain className="w-3 h-3 mr-1" />
               Smart filtering & analysis
             </Badge>
-            <Badge variant="outline">
+            <Badge variant="outline" className="bg-gray-700/50 border-gray-600 text-gray-300">
               <TrendingUp className="w-3 h-3 mr-1" />
               {RegionMapper.getCurrencySymbol(country)} prices
             </Badge>
@@ -279,7 +279,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
 
         {/* Quick Search Terms */}
         <div className="space-y-2">
-          <p className="text-sm text-gray-600">Try these popular searches:</p>
+          <p className="text-sm text-gray-400">Try these popular searches:</p>
           <div className="flex flex-wrap gap-2">
             {quickSearchTerms.map((term) => (
               <Button
@@ -288,7 +288,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
                 size="sm"
                 onClick={() => setQuery(term)}
                 disabled={loading}
-                className="text-xs"
+                className="text-xs bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
               >
                 {term}
               </Button>
@@ -299,7 +299,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
         {/* Search History */}
         {searchHistory.length > 0 && (
           <div className="space-y-2">
-            <p className="text-sm text-gray-600">Recent searches:</p>
+            <p className="text-sm text-gray-400">Recent searches:</p>
             <div className="flex flex-wrap gap-2">
               {searchHistory.map((term, index) => (
                 <Button
@@ -308,7 +308,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
                   size="sm"
                   onClick={() => setQuery(term)}
                   disabled={loading}
-                  className="text-xs text-gray-500"
+                  className="text-xs text-gray-400 hover:bg-gray-700 hover:text-gray-200"
                 >
                   {term}
                 </Button>

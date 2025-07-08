@@ -37,7 +37,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#1B1E2A] border-r border-gray-700 flex flex-col h-screen">
+    <aside className="w-64 bg-[#1E1F21] border-r border-gray-700 flex flex-col h-screen">
       {/* Header */}
       <div className="p-6 border-b border-gray-700">
         <div className="flex items-center gap-3">
@@ -84,13 +84,13 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-all duration-200",
                   isActive
-                    ? "bg-blue-600 text-white shadow-lg"
+                    ? "bg-[#8EA1FE] text-black shadow-lg"
                     : "text-gray-300 hover:text-white hover:bg-gray-700/50"
                 )}
               >
                 <Icon className={cn(
                   "w-5 h-5 flex-shrink-0",
-                  isActive ? "text-white" : "text-gray-400"
+                  isActive ? "text-black" : "text-gray-400"
                 )} />
                 <span className="font-medium">{item.name}</span>
               </Link>
@@ -103,7 +103,7 @@ export function Sidebar() {
       <div className="p-4 border-t border-gray-700">
         <Button
           variant="outline"
-          className="w-full justify-start text-gray-300 border-gray-600 hover:text-white hover:bg-gray-700/50"
+          className="w-full justify-start text-gray-300 border-gray-600 hover:text-black bg-gray-700/50 hover:bg-[#8EA1FE]"
           onClick={handleSignOut}
         >
           <LogOut className="w-4 h-4 mr-3" />

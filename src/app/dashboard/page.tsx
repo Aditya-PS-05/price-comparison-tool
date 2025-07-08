@@ -5,13 +5,11 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {SearchForm} from '../../components/search/SearchForm';
 import {AnalyzedDealsList} from '../../components/search/AnalyzedDealsList';
-import {GlobalCoverage} from '../../components/search/GlobalCoverage';
 import { Sidebar } from '../../components/dashboard/Sidebar';
 import { AnalysisResponse } from '@/lib/types/product';
 import { Alert, AlertDescription } from '../../components/ui/alert';
 import { AlertCircle, Brain } from 'lucide-react';
 import { Badge } from '../../components/ui/badge';
-import { Button } from '../../components/ui/button';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -46,7 +44,7 @@ export default function Dashboard() {
   // Show loading while session is being checked
   if (status === 'loading') {
     return (
-      <div className="flex h-screen bg-[#0D0F17] text-white items-center justify-center">
+      <div className="flex h-screen bg-[#131416] text-white items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-400">Loading...</p>
@@ -58,7 +56,7 @@ export default function Dashboard() {
   // Don't render anything if not authenticated (will redirect)
   if (status === 'unauthenticated') {
     return (
-      <div className="flex h-screen bg-[#0D0F17] text-white items-center justify-center">
+      <div className="flex h-screen bg-[#131416] text-white items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-400">Redirecting to login...</p>
@@ -68,12 +66,12 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-[#0D0F17] text-white">
+    <div className="flex h-screen bg-[#131416] text-white">
       {/* New Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-y-auto bg-[#11131C]">
+      <main className="flex-1 p-6 overflow-y-auto bg-[#131416]">
         <div className="space-y-8">
           {/* Page Header */}
           <div className="flex items-center justify-between">
@@ -105,7 +103,7 @@ export default function Dashboard() {
           {/* Search Mode Indicator */}
           {analysis && (
             <div className="max-w-4xl">
-              <Badge variant="outline" className="mb-4">
+              <Badge variant="outline" className="mb-4 bg-purple-600/20 text-purple-400 border-purple-600">
                 <Brain className="w-3 h-3 mr-1" />
                 AI-Analyzed Best Deals
               </Badge>
@@ -115,66 +113,36 @@ export default function Dashboard() {
           {/* Results Display */}
           {analysis && <AnalyzedDealsList analysis={analysis} />}
 
-          {/* Global Coverage or Feature Highlights */}
+          {/* No Products Message */}
           {!analysis && !error && (
-            <div className="max-w-6xl mt-16">
-              {showGlobalCoverage ? (
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold">Global Coverage</h2>
-                    <Button variant="outline" onClick={() => setShowGlobalCoverage(false)}>
-                      Show Features
-                    </Button>
+            <div className="max-w-4xl mt-16 mx-auto text-center">
+              <div className="bg-gray-800/30 rounded-xl p-12 border border-gray-700">
+                <div className="mb-6">
+                  <div className="w-20 h-20 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Brain className="w-10 h-10 text-gray-400" />
                   </div>
-                  <GlobalCoverage />
+                  <h3 className="text-2xl font-semibold text-white mb-2">No product searched yet</h3>
+                  <p className="text-gray-400 text-lg">
+                    Enter a product name above to find the best deals across global markets
+                  </p>
                 </div>
-              ) : (
-                <div className="space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Feature Cards */}
-                    <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
-                      <h3 className="text-lg font-semibold text-white mb-2">Global Coverage</h3>
-                      <p className="text-gray-400 text-sm mb-4">Search across 195+ countries and 1000+ websites</p>
-                      <Button 
+                
+                {/* Quick Start Suggestions */}
+                <div className="space-y-4">
+                  <p className="text-gray-300 text-sm">Popular searches to get you started:</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {['iPhone 16 Pro', 'Samsung Galaxy S24', 'MacBook Pro', 'Nike Air Jordan', 'PlayStation 5'].map((term) => (
+                      <Badge 
+                        key={term} 
                         variant="outline" 
-                        size="sm"
-                        onClick={() => setShowGlobalCoverage(true)}
+                        className="cursor-pointer hover:bg-blue-600/20 bg-gray-700/50 border-gray-600 text-gray-300 hover:text-white px-3 py-1"
                       >
-                        Explore Markets
-                      </Button>
-                    </div>
-
-                    <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
-                      <h3 className="text-lg font-semibold text-white mb-2">AI-Powered Analysis</h3>
-                      <p className="text-gray-400 text-sm mb-4">Smart deal scoring and product matching</p>
-                      <Button variant="outline" size="sm">
-                        Learn More
-                      </Button>
-                    </div>
-
-                    <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
-                      <h3 className="text-lg font-semibold text-white mb-2">Real-time Tracking</h3>
-                      <p className="text-gray-400 text-sm mb-4">Monitor prices and get instant alerts</p>
-                      <Button variant="outline" size="sm">
-                        Set Alerts
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Quick Actions */}
-                  <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl p-6 border border-blue-600/30">
-                    <h3 className="text-lg font-semibold text-white mb-2">Quick Start</h3>
-                    <p className="text-gray-300 text-sm mb-4">Try searching for popular products:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {['iPhone 16 Pro', 'Samsung Galaxy S24', 'MacBook Pro', 'Nike Air Jordan', 'PlayStation 5'].map((term) => (
-                        <Badge key={term} variant="outline" className="cursor-pointer hover:bg-blue-600/20">
-                          {term}
-                        </Badge>
-                      ))}
-                    </div>
+                        {term}
+                      </Badge>
+                    ))}
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           )}
         </div>

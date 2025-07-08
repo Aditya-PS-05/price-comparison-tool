@@ -34,7 +34,7 @@ export function GlobalCoverage() {
     .reduce((total, country) => total + RegionMapper.getSearchDomains(country).length, 0);
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
+    <div className="w-full max-w-6xl mx-auto space-y-6 bg-[#131416]">
       {/* Global Statistics */}
       <Card>
         <CardHeader>

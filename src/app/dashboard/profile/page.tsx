@@ -37,10 +37,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#0D0F17] text-white">
+    <div className="flex h-screen bg-[#131416] text-white">
       <Sidebar />
       
-      <main className="flex-1 p-6 overflow-y-auto bg-[#11131C]">
+      <main className="flex-1 p-6 overflow-y-auto bg-[#131416]">
         <div className="space-y-8">
           {/* Page Header */}
           <div className="flex items-center justify-between">
@@ -55,7 +55,7 @@ export default function ProfilePage() {
           </div>
 
           {/* User Information */}
-          <Card className="bg-gray-800/50 border-gray-700">
+          <Card className="bg-[#131416] border-gray-700">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <User className="w-5 h-5" />
@@ -105,7 +105,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* Account Stats */}
-          <Card className="bg-gray-800/50 border-gray-700">
+          <Card className="bg-[#131416] border-gray-700">
             <CardHeader>
               <CardTitle className="text-white">Account Statistics</CardTitle>
               <CardDescription>Your activity and usage overview</CardDescription>
