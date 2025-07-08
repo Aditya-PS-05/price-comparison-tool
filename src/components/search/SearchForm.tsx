@@ -22,7 +22,6 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
   const [country, setCountry] = useState('US');
   const [loading, setLoading] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [selectedRegion, setSelectedRegion] = useState<string>('Popular');
 
   // Get organized country data
   const allCountries = RegionMapper.getAllCountries();
@@ -45,7 +44,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
     });
     
     return organized;
-  }, []);
+  }, [popularCountries, regions]);
 
   const currentCountryInfo = allCountries.find(c => c.code === country);
   const supportedCountries = RegionMapper.getSupportedCountries();

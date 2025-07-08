@@ -18,7 +18,7 @@ export class ReliableUrlGenerator {
   /**
    * Generate a reliable search URL for a product query on a specific platform
    */
-  static generateReliableUrl(query: string, originalUrl: string, title: string): ReliableUrlResult {
+  static generateReliableUrl(query: string, originalUrl: string): ReliableUrlResult {
     const urlLower = originalUrl.toLowerCase();
     const cleanQuery = this.cleanQueryForUrl(query);
     let reliableUrl = originalUrl;
@@ -265,7 +265,7 @@ export class ReliableUrlGenerator {
   ): Array<{title: string, url: string, snippet: string, reliableUrl: ReliableUrlResult}> {
     return searchResults.map(result => ({
       ...result,
-      reliableUrl: this.generateReliableUrl(query, result.url, result.title)
+      reliableUrl: this.generateReliableUrl(query, result.url)
     }));
   }
   

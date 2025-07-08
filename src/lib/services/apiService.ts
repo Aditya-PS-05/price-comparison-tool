@@ -53,12 +53,12 @@ export class ApiService {
         }
       });
 
-      return response.data.items?.map((item: any) => ({
-        title: item.title,
-        url: item.link,
-        snippet: item.snippet,
-        image: item.pagemap?.cse_image?.[0]?.src || item.pagemap?.metatags?.[0]?.['og:image'],
-        thumbnail: item.pagemap?.cse_thumbnail?.[0]?.src
+      return response.data.items?.map((item: Record<string, unknown>) => ({
+        title: item.title as string,
+        url: item.link as string,
+        snippet: item.snippet as string,
+        image: ((item.pagemap as Record<string, unknown>)?.cse_image as Record<string, unknown>[])?.[0]?.src as string || ((item.pagemap as Record<string, unknown>)?.metatags as Record<string, unknown>[])?.[0]?.['og:image'] as string,
+        thumbnail: ((item.pagemap as Record<string, unknown>)?.cse_thumbnail as Record<string, unknown>[])?.[0]?.src as string
       })) || [];
     } catch (error) {
       console.error('Google Search API error:', error);
@@ -84,12 +84,12 @@ export class ApiService {
         }
       });
 
-      return response.data.organic_results?.map((item: any) => ({
-        title: item.title,
-        url: item.link,
-        snippet: item.snippet,
-        image: item.thumbnail,
-        thumbnail: item.thumbnail
+      return response.data.organic_results?.map((item: Record<string, unknown>) => ({
+        title: item.title as string,
+        url: item.link as string,
+        snippet: item.snippet as string,
+        image: item.thumbnail as string,
+        thumbnail: item.thumbnail as string
       })) || [];
     } catch (error) {
       console.error('SerpAPI error:', error);

@@ -8,10 +8,10 @@ export default function Footer() {
           <div>
             <p className="text-sm text-muted-foreground mb-4">Contact</p>
             <h2 className="text-4xl md:text-5xl font-medium mb-6">
-              Let's start<br />creating<br />together
+              Let&apos;s start<br />creating<br />together
             </h2>
             <Button variant="secondary" className="rounded-full px-6 py-4 text-black bg-white">
-              Let’s talk <ArrowUpRight className="w-4 h-4 ml-2" />
+              Let&apos;s talk <ArrowUpRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
 
@@ -29,10 +29,6 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
-        <div className="text-sm text-muted-foreground mt-16">
-          2023 Pearl Framer template crafted with love by Dawid Pietrasiak
-        </div>
-      </footer>
+    </footer>
   );
 }

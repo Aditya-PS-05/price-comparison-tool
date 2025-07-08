@@ -2,7 +2,7 @@
 export { ApiService } from './apiService';
 export { SearchService } from './searchService';
 export { PriceComparisonService } from './priceComparisonService';
-export { RegionMapper, COUNTRY_CONFIGS } from './regionMapper';
+export { RegionMapper, ENHANCED_COUNTRY_CONFIGS } from './regionMapper';
 
 // Export types
 export type { SearchResult, GoogleSearchParams, SerpApiParams } from './apiService';

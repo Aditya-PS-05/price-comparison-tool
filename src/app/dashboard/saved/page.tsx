@@ -9,11 +9,30 @@ import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Bookmark, Search, ExternalLink, Trash2, Bell, Heart, BookmarkX } from 'lucide-react';
 
+interface SavedItem {
+  id: string;
+  name: string;
+  seller: string;
+  country: string;
+  dateAdded: string;
+  savedPrice: string;
+  currentPrice: string;
+  status: 'price_drop' | 'price_increase' | 'no_change';
+  savings: string;
+}
+
+interface SavedSearch {
+  id: string;
+  query: string;
+  country: string;
+  created: string;
+}
+
 export default function SavedPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [savedItems, setSavedItems] = useState([]);
-  const [savedSearches, setSavedSearches] = useState([]);
+  const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
+  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -76,7 +95,7 @@ export default function SavedPage() {
                 <Heart className="w-5 h-5" />
                 Saved Products
               </CardTitle>
-              <CardDescription>Products you're tracking for price changes</CardDescription>
+              <CardDescription>Products you&apos;re tracking for price changes</CardDescription>
             </CardHeader>
             <CardContent>
               {savedItems.length === 0 ? (

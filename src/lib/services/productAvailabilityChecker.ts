@@ -5,7 +5,7 @@
  * rather than just informational pages or out-of-stock items.
  */
 
-import { ReliableUrlGenerator, ReliableUrlResult } from './reliableUrlGenerator';
+import { ReliableUrlResult } from './reliableUrlGenerator';
 
 export interface AvailabilityCheck {
   isAvailable: boolean;

@@ -265,7 +265,7 @@ function generateSearchDomains(countryCode: string): string[] {
     'Middle East': ['noon.com', 'souq.com', 'carrefour.com']
   };
 
-  let domains = commonPatterns.slice(0, 8); // Start with 8 common patterns
+  const domains = [...commonPatterns.slice(0, 8)]; // Start with 8 common patterns
   
   // Add regional domains
   if (countryInfo.region in regionalDomains) {

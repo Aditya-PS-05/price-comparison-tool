@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Sidebar } from '../../../components/dashboard/Sidebar';
 import { Badge } from '../../../components/ui/badge';
-import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { User, Calendar, Mail, Globe, Clock } from 'lucide-react';
+import { User, Mail, Globe, Clock } from 'lucide-react';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();

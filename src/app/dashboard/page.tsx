@@ -29,7 +29,6 @@ export default function Dashboard() {
 
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [showGlobalCoverage, setShowGlobalCoverage] = useState(false);
 
   const handleAnalysis = (analysisResults: AnalysisResponse) => {
     setAnalysis(analysisResults);

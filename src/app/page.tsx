@@ -57,7 +57,7 @@ export default function HomePage() {
         </div>
         <h1 className="text-4xl md:text-6xl font-semibold leading-tight mb-6">
           Discover the power of PriceSphere, a universal price comparison tool. <span className="text-muted-foreground font-normal">
-          Let's find the best deal for any product, from any website, in any country — together.
+          Let&apos;s find the best deal for any product, from any website, in any country — together.
           </span>
         </h1>
         

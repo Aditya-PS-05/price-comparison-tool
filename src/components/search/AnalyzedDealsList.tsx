@@ -16,7 +16,6 @@ import {
   Star,
   Globe,
   MapPin,
-  Zap
 } from 'lucide-react';
 import { RegionMapper } from '@/lib/services/regionMapper';
 import { getCountryInfo } from '@/lib/data/globalCountries';

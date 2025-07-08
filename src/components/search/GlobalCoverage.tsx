@@ -88,11 +88,10 @@ export function GlobalCoverage() {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {regions.map((region) => {
-              const regionCountries = allCountries.filter(c => {
-                // This is a simplified mapping - in real implementation, you'd use the actual region data
-                return true; // For demo purposes
-              });
-              const regionPopular = regionCountries.filter(c => c.popular).length;
+              // const regionCountries = allCountries.filter(() => {
+              //   // This is a simplified mapping - in real implementation, you'd use the actual region data
+              //   return true; // For demo purposes
+              // });
               
               return (
                 <div key={region} className="bg-gray-50 rounded-lg p-4 space-y-2">

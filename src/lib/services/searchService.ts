@@ -38,7 +38,6 @@ export class SearchService {
     try {
       const countryCode = country.toUpperCase();
       const regionalSites = RegionMapper.getSearchDomains(countryCode);
-      const region = this.getRegionName(countryCode);
       
       // Build localized search query with site restrictions
       const localizedQuery = RegionMapper.getLocalizedSearchQuery(query, countryCode);
