@@ -1,17 +1,23 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Package, LogIn, UserPlus } from "lucide-react";
+import { ArrowUpRight, Package, LogIn, UserPlus, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/base/Footer";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 export default function HomePage() {
   const { data: session, status } = useSession();
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+
+  const toggleSection = (section: string) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
 
   return (
-    <main className="min-h-screen bg-white px-4 sm:px-6 md:px-20 py-6 md:py-12">
+    <main className="min-h-screen min-w-screen bg-white px-4 sm:px-6 md:px-20 py-6 md:py-12">
       {/* Navbar */}
       <nav className="flex justify-between items-center mb-12 md:mb-24">
         <div className="flex items-center gap-2 md:gap-3">
@@ -82,21 +88,6 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* Features */}
-        <div className="mt-8 md:mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-          <div className="p-3 md:p-4 border rounded-lg">
-            <h3 className="font-semibold mb-2 text-sm md:text-base">🌍 Global Coverage</h3>
-            <p className="text-xs md:text-sm text-gray-600">Search across 195+ countries and 1000+ websites</p>
-          </div>
-          <div className="p-3 md:p-4 border rounded-lg">
-            <h3 className="font-semibold mb-2 text-sm md:text-base">🤖 AI-Powered</h3>
-            <p className="text-xs md:text-sm text-gray-600">Smart deal analysis and product matching</p>
-          </div>
-          <div className="p-3 md:p-4 border rounded-lg sm:col-span-2 md:col-span-1">
-            <h3 className="font-semibold mb-2 text-sm md:text-base">⚡ Real-time</h3>
-            <p className="text-xs md:text-sm text-gray-600">Live price tracking and instant alerts</p>
-          </div>
-        </div>
       </div>
 
       {/* Dashboard Image Section */}
@@ -111,6 +102,69 @@ export default function HomePage() {
           />
         </div>
       </div>
+
+      {/* Services Section */}
+      <div className="mt-8 md:mt-12 w-full">
+          <div className="text-[40px] text-black font-bold mb-6">
+            Services
+          </div>
+          
+          <div className="space-y-0 border-t border-gray-200 w-full">
+            {/* Global Coverage */}
+            <div className="border-b border-gray-200">
+              <button
+                onClick={() => toggleSection('global')}
+                className="w-full flex items-center justify-between py-6 text-left hover:bg-gray-50 transition-colors"
+              >
+                <div>
+                  <h3 className="text-lg md:text-xl font-medium text-black">Global Coverage</h3>
+                  <p className="text-sm text-gray-600 mt-1">Search across 195+ countries and 1000+ websites worldwide</p>
+                </div>
+                <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${
+                  expandedSection === 'global' ? 'rotate-180' : ''
+                }`} />
+              </button>
+              {expandedSection === 'global' && (
+                <div className="pb-6 px-4">
+                  <p className="text-gray-600 leading-relaxed">
+                    Our global coverage ensures you never miss a great deal, no matter where you are in the world. 
+                    We search across 195+ countries and over 1000 websites to bring you comprehensive price comparisons. 
+                    From local marketplaces to international retailers, our platform covers major e-commerce sites, 
+                    specialty stores, and regional shopping platforms to give you the most complete view of product 
+                    availability and pricing across different markets.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* AI-Powered */}
+            <div className="border-b border-gray-200">
+              <button
+                onClick={() => toggleSection('ai')}
+                className="w-full flex items-center justify-between py-6 text-left hover:bg-gray-50 transition-colors"
+              >
+                <div>
+                  <h3 className="text-lg md:text-xl font-medium text-black">AI-Powered</h3>
+                  <p className="text-sm text-gray-600 mt-1">Smart deal analysis and intelligent product matching</p>
+                </div>
+                <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${
+                  expandedSection === 'ai' ? 'rotate-180' : ''
+                }`} />
+              </button>
+              {expandedSection === 'ai' && (
+                <div className="pb-6 px-4">
+                  <p className="text-gray-600 leading-relaxed">
+                    Our advanced AI technology goes beyond simple price matching. We use machine learning algorithms 
+                    to analyze product descriptions, images, and specifications to ensure accurate matches across 
+                    different retailers. Our AI evaluates deal quality, identifies the best offers, and provides 
+                    intelligent recommendations based on your preferences. The system continuously learns from user 
+                    behavior and market trends to deliver increasingly accurate and relevant results.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
       {/* Footer Section */}
       <Footer />
