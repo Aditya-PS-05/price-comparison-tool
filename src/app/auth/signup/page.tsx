@@ -1,3 +1,4 @@
+// ✅ Cleaned version of SignUpPage.tsx with unused imports removed
 'use client'
 
 import React, { useState } from 'react'
@@ -8,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { Package, Mail, Lock, Github, Eye, EyeOff, User } from 'lucide-react'
+import { Package, Mail, Github, Eye, EyeOff } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function SignUpPage() {
@@ -28,7 +29,6 @@ export default function SignUpPage() {
     setError('')
     setSuccess('')
 
-    // Basic validation
     if (password !== confirmPassword) {
       setError('Passwords do not match')
       setLoading(false)
@@ -47,11 +47,7 @@ export default function SignUpPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
+        body: JSON.stringify({ name, email, password }),
       })
 
       const data = await response.json()
@@ -61,13 +57,11 @@ export default function SignUpPage() {
       }
 
       setSuccess('Account created successfully! You can now sign in.')
-      
-      // Reset form
+
       setName('')
       setEmail('')
       setPassword('')
       setConfirmPassword('')
-      
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to create account. Please try again.')
     } finally {
@@ -79,7 +73,7 @@ export default function SignUpPage() {
     setLoading(true)
     try {
       await signIn(provider, { callbackUrl: '/dashboard' })
-    } catch (error) {
+    } catch {
       setError('Failed to sign up with ' + provider)
       setLoading(false)
     }
@@ -88,7 +82,6 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-[#0D0F17] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
@@ -107,7 +100,6 @@ export default function SignUpPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* OAuth Providers */}
             <div className="space-y-3">
               <Button
                 variant="outline"
@@ -118,7 +110,7 @@ export default function SignUpPage() {
                 <Mail className="w-4 h-4 mr-2" />
                 Continue with Google
               </Button>
-              
+
               <Button
                 variant="outline"
                 className="w-full bg-gray-900 hover:bg-gray-800 text-white border-gray-600"
@@ -139,7 +131,6 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            {/* Sign Up Form */}
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-gray-300">Full Name</Label>
@@ -166,7 +157,7 @@ export default function SignUpPage() {
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-gray-300">Password</Label>
                 <div className="relative">
@@ -186,11 +177,7 @@ export default function SignUpPage() {
                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
-                    )}
+                    {showPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
                   </Button>
                 </div>
               </div>
@@ -214,11 +201,7 @@ export default function SignUpPage() {
                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
-                    )}
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
                   </Button>
                 </div>
               </div>
@@ -235,11 +218,7 @@ export default function SignUpPage() {
                 </Alert>
               )}
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-              >
+              <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? 'Creating account...' : 'Create account'}
               </Button>
             </form>
@@ -251,16 +230,10 @@ export default function SignUpPage() {
               </Link>
             </div>
 
-            {/* Terms */}
             <p className="text-xs text-gray-500 text-center">
               By creating an account, you agree to our{' '}
-              <Link href="/terms" className="text-blue-400 hover:text-blue-300">
-                Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link href="/privacy" className="text-blue-400 hover:text-blue-300">
-                Privacy Policy
-              </Link>
+              <Link href="/terms" className="text-blue-400 hover:text-blue-300">Terms of Service</Link>{' '}and{' '}
+              <Link href="/privacy" className="text-blue-400 hover:text-blue-300">Privacy Policy</Link>
             </p>
           </CardContent>
         </Card>

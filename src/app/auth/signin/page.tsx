@@ -1,7 +1,8 @@
+// ✅ Cleaned version of SignInPage.tsx with unused imports removed
 'use client'
 
 import React, { useState } from 'react'
-import { signIn, getSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -9,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { Package, Mail, Lock, Github, Eye, EyeOff } from 'lucide-react'
+import { Package, Mail, Github, Eye, EyeOff } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function SignInPage() {
@@ -39,7 +40,7 @@ export default function SignInPage() {
         router.push('/dashboard')
         router.refresh()
       }
-    } catch (error) {
+    } catch {
       setError('An error occurred. Please try again.')
     } finally {
       setLoading(false)
@@ -50,7 +51,7 @@ export default function SignInPage() {
     setLoading(true)
     try {
       await signIn(provider, { callbackUrl: '/dashboard' })
-    } catch (error) {
+    } catch {
       setError('Failed to sign in with ' + provider)
       setLoading(false)
     }
@@ -59,7 +60,6 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen bg-[#0D0F17] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
@@ -78,7 +78,6 @@ export default function SignInPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* OAuth Providers */}
             <div className="space-y-3">
               <Button
                 variant="outline"
@@ -89,7 +88,7 @@ export default function SignInPage() {
                 <Mail className="w-4 h-4 mr-2" />
                 Continue with Google
               </Button>
-              
+
               <Button
                 variant="outline"
                 className="w-full bg-gray-900 hover:bg-gray-800 text-white border-gray-600"
@@ -110,7 +109,6 @@ export default function SignInPage() {
               </div>
             </div>
 
-            {/* Credentials Form */}
             <form onSubmit={handleCredentialsSignIn} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-gray-300">Email</Label>
@@ -124,7 +122,7 @@ export default function SignInPage() {
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-gray-300">Password</Label>
                 <div className="relative">
@@ -169,13 +167,12 @@ export default function SignInPage() {
             </form>
 
             <div className="text-center text-sm">
-              <span className="text-gray-400">Don't have an account? </span>
+              <span className="text-gray-400">Don&apos;t have an account? </span>
               <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300">
                 Sign up
               </Link>
             </div>
 
-            {/* Demo Credentials */}
             <div className="mt-6 p-3 bg-blue-600/20 border border-blue-600/30 rounded-lg">
               <p className="text-xs text-blue-300 font-medium mb-1">Demo Credentials:</p>
               <p className="text-xs text-blue-200">Email: user@example.com</p>

@@ -3,11 +3,16 @@ import type { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import GitHubProvider from 'next-auth/providers/github'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
+// Validate required environment variables
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error('NEXTAUTH_SECRET environment variable is required')
+}
+
 const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
   providers: [
     GoogleProvider({
@@ -35,6 +40,15 @@ const authOptions: NextAuthOptions = {
           const user = await prisma.user.findUnique({
             where: {
               email: credentials.email.toLowerCase()
+            },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              image: true,
+              password: true,
+              defaultCountry: true,
+              defaultCurrency: true,
             }
           })
 
@@ -53,7 +67,7 @@ const authOptions: NextAuthOptions = {
 
           console.log('User authenticated successfully:', user.email)
           
-          // Return user data (Prisma adapter will handle session creation)
+          // Return user data without password
           return {
             id: user.id,
             email: user.email,
@@ -71,13 +85,14 @@ const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: '/auth/signin',
-    signUp: '/auth/signup',
+    newUser: '/auth/signup',
   },
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn() {
       // This callback runs whenever a user signs in
       // For OAuth providers, user data will be automatically stored via Prisma adapter
       // For credentials, we handle it in the authorize function
@@ -99,7 +114,7 @@ const authOptions: NextAuthOptions = {
       }
       return session
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // Called when user signs in
       if (user) {
         token.id = user.id
