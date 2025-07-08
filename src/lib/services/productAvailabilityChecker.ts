@@ -5,6 +5,8 @@
  * rather than just informational pages or out-of-stock items.
  */
 
+import { ReliableUrlGenerator, ReliableUrlResult } from './reliableUrlGenerator';
+
 export interface AvailabilityCheck {
   isAvailable: boolean;
   hasPrice: boolean;
@@ -12,6 +14,7 @@ export interface AvailabilityCheck {
   isProductPage: boolean;
   confidence: number; // 0-1 score
   reasons: string[];
+  reliableUrl?: ReliableUrlResult;
 }
 
 export interface SearchResultWithAvailability {
