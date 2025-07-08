@@ -10,14 +10,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { History, Search, ExternalLink, Calendar, Clock, Menu } from 'lucide-react';
 
 interface PastSearch {
-  id: number;
+  id: string;
   query: string;
   country: string;
-  timestamp: string;
+  searchTime: string;
   resultsCount: number;
-  bestPrice: string;
-  status: string;
-  userId?: string;
 }
 
 export default function PastSearchesPage() {
@@ -34,11 +31,24 @@ export default function PastSearchesPage() {
       return;
     }
     
-    // For new users, start with empty state
-    // In a real app, this would fetch from the database
-    setPastSearches([]);
-    setLoading(false);
+    fetchPastSearches();
   }, [session, status, router]);
+
+  const fetchPastSearches = async () => {
+    try {
+      const response = await fetch('/api/past-searches');
+      if (response.ok) {
+        const data = await response.json();
+        setPastSearches(data.searches || []);
+      } else {
+        console.error('Failed to fetch past searches');
+      }
+    } catch (error) {
+      console.error('Error fetching past searches:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Show loading while session is being checked
   if (status === 'loading' || loading) {
@@ -85,7 +95,7 @@ export default function PastSearchesPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">Past Searches</h1>
-              <p className="text-gray-400">View your search history and repeat previous searches</p>
+              <p className="text-gray-400">View all your previous product searches across different countries</p>
             </div>
             <Badge variant="outline" className="bg-blue-600/20 text-blue-400 border-blue-600">
               <History className="w-3 h-3 mr-1" />
@@ -98,9 +108,9 @@ export default function PastSearchesPage() {
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <History className="w-5 h-5" />
-                Recent Search History
+                Product Search History
               </CardTitle>
-              <CardDescription>Your recent product searches and results</CardDescription>
+              <CardDescription>All your previous product searches with countries and results</CardDescription>
             </CardHeader>
             <CardContent>
               {pastSearches.length === 0 ? (
@@ -122,34 +132,36 @@ export default function PastSearchesPage() {
                           <Search className="w-5 h-5 text-blue-400" />
                         </div>
                         <div>
-                          <div className="font-semibold text-white">{search.query}</div>
-                          <div className="text-sm text-gray-400 flex items-center gap-4">
+                          <div className="font-semibold text-white text-lg">{search.query}</div>
+                          <div className="text-sm text-gray-400 flex items-center gap-4 mt-1">
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {search.timestamp}
+                              {new Date(search.searchTime).toLocaleDateString()}
                             </span>
-                            <span>in {search.country}</span>
-                            <span>{search.resultsCount} results</span>
+                            <span className="flex items-center gap-1">
+                              🌍 {search.country}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              📊 {search.resultsCount} results
+                            </span>
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1">
+                            Product: {search.query} • Market: {search.country}
                           </div>
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <div className="text-sm text-gray-400">Best Price</div>
-                          <div className="font-semibold text-green-400">{search.bestPrice}</div>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                          <Button variant="outline" size="sm">
-                            <ExternalLink className="w-3 h-3 mr-1" />
-                            View Results
-                          </Button>
-                          <Button size="sm">
-                            <Search className="w-3 h-3 mr-1" />
-                            Search Again
-                          </Button>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          size="sm"
+                          onClick={() => {
+                            // Redirect to dashboard with pre-filled search
+                            router.push(`/dashboard?q=${encodeURIComponent(search.query)}&country=${search.country}`);
+                          }}
+                        >
+                          <Search className="w-3 h-3 mr-1" />
+                          Search Again
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -175,8 +187,17 @@ export default function PastSearchesPage() {
                   <div className="space-y-3">
                     {pastSearches.slice(0, 3).map((search) => (
                       <div key={search.id} className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-                        <span className="text-white">{search.query}</span>
-                        <Button variant="outline" size="sm">
+                        <div>
+                          <div className="text-white font-medium">{search.query}</div>
+                          <div className="text-xs text-gray-400">🌍 {search.country}</div>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            router.push(`/dashboard?q=${encodeURIComponent(search.query)}&country=${search.country}`);
+                          }}
+                        >
                           Search
                         </Button>
                       </div>

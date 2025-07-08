@@ -11,14 +11,16 @@ import { Bookmark, Search, ExternalLink, Trash2, Bell, Heart, BookmarkX, Menu } 
 
 interface SavedItem {
   id: string;
-  name: string;
+  productName: string;
   seller: string;
   country: string;
-  dateAdded: string;
-  savedPrice: string;
-  currentPrice: string;
-  status: 'price_drop' | 'price_increase' | 'no_change';
-  savings: string;
+  createdAt: string;
+  savedPrice: number;
+  currentPrice: number;
+  currency: string;
+  productUrl: string;
+  imageUrl?: string;
+  status: string;
 }
 
 interface SavedSearch {
@@ -43,12 +45,25 @@ export default function SavedPage() {
       return;
     }
     
-    // For now, show empty state for new users
-    // In a real app, this would fetch from the database
-    setSavedItems([]);
-    setSavedSearches([]);
-    setLoading(false);
+    fetchSavedData();
   }, [session, status, router]);
+
+  const fetchSavedData = async () => {
+    try {
+      const response = await fetch('/api/saved-products');
+      if (response.ok) {
+        const data = await response.json();
+        setSavedItems(data.products || []);
+      } else {
+        console.error('Failed to fetch saved products');
+      }
+      setSavedSearches([]); // We'll use this for other functionality later
+    } catch (error) {
+      console.error('Error fetching saved data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Show loading while session is being checked
   if (status === 'loading' || loading) {
@@ -147,24 +162,20 @@ export default function SavedPage() {
                   {savedItems.map((item) => (
                     <div key={item.id} className="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg border border-gray-600">
                       <div className="flex items-center gap-4">
-                        <div className={`w-3 h-3 rounded-full ${
-                          item.status === 'price_drop' ? 'bg-green-400' :
-                          item.status === 'price_increase' ? 'bg-red-400' :
-                          'bg-gray-400'
-                        }`}></div>
+                        <div className="w-3 h-3 rounded-full bg-blue-400"></div>
                         <div>
-                          <div className="font-semibold text-white">{item.name}</div>
+                          <div className="font-semibold text-white">{item.productName}</div>
                           <div className="text-sm text-gray-400">
-                            {item.seller} • {item.country} • Added {item.dateAdded}
+                            {item.seller} • {item.country} • Added {new Date(item.createdAt).toLocaleDateString()}
                           </div>
                           <div className="text-xs text-gray-500 flex items-center gap-4 mt-1">
-                            <span>Saved at: {item.savedPrice}</span>
-                            <span>Current: {item.currentPrice}</span>
-                            {item.status === 'price_drop' && (
-                              <span className="text-green-400">↓ {item.savings} saved</span>
+                            <span>Saved at: {item.currency} {item.savedPrice}</span>
+                            <span>Current: {item.currency} {item.currentPrice}</span>
+                            {item.savedPrice > item.currentPrice && (
+                              <span className="text-green-400">↓ {item.currency} {(item.savedPrice - item.currentPrice).toFixed(2)} saved</span>
                             )}
-                            {item.status === 'price_increase' && (
-                              <span className="text-red-400">↑ {item.savings} increase</span>
+                            {item.savedPrice < item.currentPrice && (
+                              <span className="text-red-400">↑ {item.currency} {(item.currentPrice - item.savedPrice).toFixed(2)} increase</span>
                             )}
                           </div>
                         </div>

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SearchService } from '@/lib/services/searchService';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
 // Input validation schema - simplified for current API
@@ -22,6 +25,25 @@ export async function POST(request: NextRequest) {
     
     // Get search results using the testSearch method
     const searchResponse = await searchService.testSearch(query, country);
+    
+    // Save to past searches if user is authenticated
+    try {
+      const session = await getServerSession(authOptions);
+      if (session?.user?.id && searchResponse.searchResultsCount > 0) {
+        await prisma.search.create({
+          data: {
+            userId: session.user.id,
+            query,
+            country,
+            resultsCount: searchResponse.searchResultsCount
+          }
+        });
+        console.log(`Saved past search for user ${session.user.id}: "${query}" in ${country}`);
+      }
+    } catch (dbError) {
+      // Don't fail the search if database save fails
+      console.error('Failed to save past search:', dbError);
+    }
     
     // Return response directly (matches current API format)
     return NextResponse.json(searchResponse);

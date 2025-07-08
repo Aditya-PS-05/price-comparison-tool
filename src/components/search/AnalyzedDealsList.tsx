@@ -52,14 +52,14 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
 
   if (analysis.relevantResults === 0) {
     return (
-      <Card className="w-full max-w-4xl mx-auto">
+      <Card className="w-full max-w-4xl mx-auto bg-gray-900/50 border-gray-800">
         <CardContent className="text-center py-12">
           <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-600 mb-2">No relevant deals found</h3>
-          <p className="text-gray-500 mb-6">
+          <h3 className="text-xl font-semibold text-gray-300 mb-2">No relevant deals found</h3>
+          <p className="text-gray-400 mb-6">
             The AI couldn&apos;t find any relevant shopping results for &quot;{analysis.query}&quot;.
           </p>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-500">
             Try searching with more specific product names or different keywords.
           </p>
         </CardContent>
@@ -80,9 +80,9 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
       {/* AI Analysis Summary */}
-      <Card>
+      <Card className="bg-gray-900/50 border-gray-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-white">
             <Brain className="w-5 h-5 text-purple-600" />
             AI Deal Analysis for &quot;{analysis.query}&quot;
           </CardTitle>
@@ -92,20 +92,20 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
           {(() => {
             const countryInfo = getCountryInfo(analysis.country);
             return countryInfo ? (
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+              <div className="bg-purple-900/30 border border-purple-700 rounded-lg p-4 mb-6">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-purple-900 flex items-center gap-2">
+                  <h4 className="font-semibold text-purple-300 flex items-center gap-2">
                     <Globe className="w-4 h-4" />
                     Results for {countryInfo.name}
                   </h4>
                   <div className="flex items-center gap-2">
                     {countryInfo.popular && (
-                      <Badge variant="default" className="bg-purple-600 text-xs">
+                      <Badge variant="default" className="bg-purple-600 text-white text-xs">
                         <Star className="w-3 h-3 mr-1" />
                         Major Market
                       </Badge>
                     )}
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs border-purple-600 text-purple-300">
                       <MapPin className="w-3 h-3 mr-1" />
                       {countryInfo.region}
                     </Badge>
@@ -113,20 +113,20 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                   <div>
-                    <span className="text-purple-700 font-medium">Currency:</span>
-                    <div className="text-purple-900 font-semibold">{countryInfo.currencySymbol} {countryInfo.currency}</div>
+                    <span className="text-purple-400 font-medium">Currency:</span>
+                    <div className="text-purple-200 font-semibold">{countryInfo.currencySymbol} {countryInfo.currency}</div>
                   </div>
                   <div>
-                    <span className="text-purple-700 font-medium">Retailers:</span>
-                    <div className="text-purple-900 font-semibold">{RegionMapper.getSearchDomains(analysis.country).length} sites</div>
+                    <span className="text-purple-400 font-medium">Retailers:</span>
+                    <div className="text-purple-200 font-semibold">{RegionMapper.getSearchDomains(analysis.country).length} sites</div>
                   </div>
                   <div>
-                    <span className="text-purple-700 font-medium">Language:</span>
-                    <div className="text-purple-900 font-semibold">{countryInfo.language.toUpperCase()}</div>
+                    <span className="text-purple-400 font-medium">Language:</span>
+                    <div className="text-purple-200 font-semibold">{countryInfo.language.toUpperCase()}</div>
                   </div>
                   <div>
-                    <span className="text-purple-700 font-medium">Search Engine:</span>
-                    <div className="text-purple-900 font-semibold">{analysis.searchEngineUsed}</div>
+                    <span className="text-purple-400 font-medium">Search Engine:</span>
+                    <div className="text-purple-200 font-semibold">{analysis.searchEngineUsed}</div>
                   </div>
                 </div>
               </div>
@@ -135,71 +135,71 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-4">
             <div>
-              <div className="text-2xl font-bold text-blue-600">{analysis.totalResults}</div>
-              <div className="text-sm text-gray-600">Total Results</div>
+              <div className="text-2xl font-bold text-blue-400">{analysis.totalResults}</div>
+              <div className="text-sm text-gray-400">Total Results</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-green-600">{analysis.relevantResults}</div>
-              <div className="text-sm text-gray-600">Relevant Deals</div>
+              <div className="text-2xl font-bold text-green-400">{analysis.relevantResults}</div>
+              <div className="text-sm text-gray-400">Relevant Deals</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-purple-600">
+              <div className="text-2xl font-bold text-purple-400">
                 {Math.round((analysis.relevantResults / analysis.totalResults) * 100)}%
               </div>
-              <div className="text-sm text-gray-600">Relevance Rate</div>
+              <div className="text-sm text-gray-400">Relevance Rate</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-orange-600">{qualityStats.excellent}</div>
-              <div className="text-sm text-gray-600">Excellent Deals</div>
+              <div className="text-2xl font-bold text-orange-400">{qualityStats.excellent}</div>
+              <div className="text-sm text-gray-400">Excellent Deals</div>
             </div>
           </div>
 
           {/* Quality Distribution */}
           <div className="flex flex-wrap gap-2 mb-4">
             {qualityStats.excellent > 0 && (
-              <Badge variant="outline" className="bg-green-50 border-green-200">
-                <Award className="w-3 h-3 mr-1 text-green-600" />
+              <Badge variant="outline" className="bg-green-900/30 border-green-600 text-green-400">
+                <Award className="w-3 h-3 mr-1 text-green-400" />
                 {qualityStats.excellent} Excellent
               </Badge>
             )}
             {qualityStats.good > 0 && (
-              <Badge variant="outline" className="bg-blue-50 border-blue-200">
-                <TrendingUp className="w-3 h-3 mr-1 text-blue-600" />
+              <Badge variant="outline" className="bg-blue-900/30 border-blue-600 text-blue-400">
+                <TrendingUp className="w-3 h-3 mr-1 text-blue-400" />
                 {qualityStats.good} Good
               </Badge>
             )}
             {qualityStats.average > 0 && (
-              <Badge variant="outline" className="bg-yellow-50 border-yellow-200">
-                <Star className="w-3 h-3 mr-1 text-yellow-600" />
+              <Badge variant="outline" className="bg-yellow-900/30 border-yellow-600 text-yellow-400">
+                <Star className="w-3 h-3 mr-1 text-yellow-400" />
                 {qualityStats.average} Average
               </Badge>
             )}
             {qualityStats.poor > 0 && (
-              <Badge variant="outline" className="bg-red-50 border-red-200">
-                <AlertCircle className="w-3 h-3 mr-1 text-red-600" />
+              <Badge variant="outline" className="bg-red-900/30 border-red-600 text-red-400">
+                <AlertCircle className="w-3 h-3 mr-1 text-red-400" />
                 {qualityStats.poor} Poor
               </Badge>
             )}
           </div>
 
           {/* AI Summary */}
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 p-4 rounded-lg">
-            <div className="text-sm font-medium text-purple-800 mb-1 flex items-center gap-2">
+          <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700 p-4 rounded-lg">
+            <div className="text-sm font-medium text-purple-300 mb-1 flex items-center gap-2">
               <Brain className="w-4 h-4" />
               AI Analysis Summary:
             </div>
-            <div className="text-sm text-purple-700">{analysis.summary}</div>
+            <div className="text-sm text-purple-200">{analysis.summary}</div>
           </div>
         </CardContent>
       </Card>
 
       {/* Filters and Sorting */}
-      <Card>
+      <Card className="bg-gray-900/50 border-gray-800">
         <CardContent className="pt-6">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4" />
-              <span className="text-sm font-medium">Filters:</span>
+              <span className="text-sm font-medium text-gray-300">Filters:</span>
             </div>
             
             <Select value={filterQuality} onValueChange={setFilterQuality}>
@@ -216,7 +216,7 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
 
             <div className="flex items-center gap-2">
               <SortAsc className="w-4 h-4" />
-              <span className="text-sm font-medium">Sort by:</span>
+              <span className="text-sm font-medium text-gray-300">Sort by:</span>
             </div>
             
             <Select value={sortBy} onValueChange={(value: 'relevance' | 'quality' | 'price') => setSortBy(value)}>
@@ -246,14 +246,15 @@ export function AnalyzedDealsList({ analysis }: AnalyzedDealsListProps) {
             key={`${deal.url}-${index}`}
             deal={deal}
             rank={index + 1}
+            country={analysis.country}
           />
         ))}
       </div>
 
       {/* Analysis Info */}
-      <Card>
+      <Card className="bg-gray-900/50 border-gray-800">
         <CardContent className="pt-6">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-400">
             <p className="mb-2">Analysis powered by: {analysis.searchEngineUsed}</p>
             <p className="text-xs">
               Results are analyzed by AI for relevance and deal quality. Prices and availability should be verified on the retailer&apos;s website.
