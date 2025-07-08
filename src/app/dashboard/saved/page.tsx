@@ -1,65 +1,50 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { Sidebar } from '../../../components/dashboard/Sidebar';
 import { Badge } from '../../../components/ui/badge';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Bookmark, Search, ExternalLink, Trash2, Bell, Heart } from 'lucide-react';
+import { Bookmark, Search, ExternalLink, Trash2, Bell, Heart, BookmarkX } from 'lucide-react';
 
 export default function SavedPage() {
-  const savedItems = [
-    {
-      id: 1,
-      name: 'iPhone 16 Pro 128GB',
-      currentPrice: '$999',
-      savedPrice: '$1,099',
-      country: 'United States',
-      seller: 'Apple Store',
-      dateAdded: '2024-01-15',
-      status: 'price_drop',
-      savings: '$100'
-    },
-    {
-      id: 2,
-      name: 'Samsung Galaxy S24 Ultra',
-      currentPrice: '$1,199',
-      savedPrice: '$1,199',
-      country: 'Canada',
-      seller: 'Samsung Store',
-      dateAdded: '2024-01-12',
-      status: 'same_price',
-      savings: '$0'
-    },
-    {
-      id: 3,
-      name: 'MacBook Pro 14" M3',
-      currentPrice: '$1,699',
-      savedPrice: '$1,599',
-      country: 'United Kingdom',
-      seller: 'Apple Store UK',
-      dateAdded: '2024-01-10',
-      status: 'price_increase',
-      savings: '-£100'
-    },
-    {
-      id: 4,
-      name: 'Sony WH-1000XM5',
-      currentPrice: '$279',
-      savedPrice: '$299',
-      country: 'Germany',
-      seller: 'Amazon DE',
-      dateAdded: '2024-01-08',
-      status: 'price_drop',
-      savings: '€20'
-    }
-  ];
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [savedItems, setSavedItems] = useState([]);
+  const [savedSearches, setSavedSearches] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const savedSearches = [
-    { id: 1, query: 'Gaming Laptop RTX 4070', country: 'US', created: '2024-01-20' },
-    { id: 2, query: 'Wireless Headphones', country: 'CA', created: '2024-01-18' },
-    { id: 3, query: 'Smart Watch', country: 'UK', created: '2024-01-15' }
-  ];
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin?callbackUrl=/dashboard/saved');
+      return;
+    }
+    
+    // For now, show empty state for new users
+    // In a real app, this would fetch from the database
+    setSavedItems([]);
+    setSavedSearches([]);
+    setLoading(false);
+  }, [session, status, router]);
+
+  // Show loading while session is being checked
+  if (status === 'loading' || loading) {
+    return (
+      <div className="flex h-screen bg-[#0D0F17] text-white items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading saved items...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen bg-[#0D0F17] text-white">
@@ -94,61 +79,73 @@ export default function SavedPage() {
               <CardDescription>Products you're tracking for price changes</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {savedItems.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg border border-gray-600">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-3 h-3 rounded-full ${
-                        item.status === 'price_drop' ? 'bg-green-400' :
-                        item.status === 'price_increase' ? 'bg-red-400' :
-                        'bg-gray-400'
-                      }`}></div>
-                      <div>
-                        <div className="font-semibold text-white">{item.name}</div>
-                        <div className="text-sm text-gray-400">
-                          {item.seller} • {item.country} • Added {item.dateAdded}
-                        </div>
-                        <div className="text-xs text-gray-500 flex items-center gap-4 mt-1">
-                          <span>Saved at: {item.savedPrice}</span>
-                          <span>Current: {item.currentPrice}</span>
-                          {item.status === 'price_drop' && (
-                            <span className="text-green-400">↓ {item.savings} saved</span>
-                          )}
-                          {item.status === 'price_increase' && (
-                            <span className="text-red-400">↑ {item.savings} increase</span>
-                          )}
+              {savedItems.length === 0 ? (
+                <div className="text-center py-12">
+                  <BookmarkX className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">No saved products yet</h3>
+                  <p className="text-gray-400 mb-4">Save products from search results to track price changes</p>
+                  <Button onClick={() => router.push('/dashboard')}>
+                    <Search className="w-4 h-4 mr-2" />
+                    Start Searching
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {savedItems.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg border border-gray-600">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-3 h-3 rounded-full ${
+                          item.status === 'price_drop' ? 'bg-green-400' :
+                          item.status === 'price_increase' ? 'bg-red-400' :
+                          'bg-gray-400'
+                        }`}></div>
+                        <div>
+                          <div className="font-semibold text-white">{item.name}</div>
+                          <div className="text-sm text-gray-400">
+                            {item.seller} • {item.country} • Added {item.dateAdded}
+                          </div>
+                          <div className="text-xs text-gray-500 flex items-center gap-4 mt-1">
+                            <span>Saved at: {item.savedPrice}</span>
+                            <span>Current: {item.currentPrice}</span>
+                            {item.status === 'price_drop' && (
+                              <span className="text-green-400">↓ {item.savings} saved</span>
+                            )}
+                            {item.status === 'price_increase' && (
+                              <span className="text-red-400">↑ {item.savings} increase</span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className={
-                        item.status === 'price_drop' ? 'bg-green-600/20 text-green-400 border-green-600' :
-                        item.status === 'price_increase' ? 'bg-red-600/20 text-red-400 border-red-600' :
-                        'bg-gray-600/20 text-gray-400 border-gray-600'
-                      }>
-                        {item.status === 'price_drop' ? 'Price Drop!' :
-                         item.status === 'price_increase' ? 'Price Up' :
-                         'No Change'}
-                      </Badge>
                       
                       <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                          <Bell className="w-3 h-3 mr-1" />
-                          Alert
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <ExternalLink className="w-3 h-3 mr-1" />
-                          View
-                        </Button>
-                        <Button variant="outline" size="sm" className="text-red-400 hover:text-red-300">
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
+                        <Badge variant="outline" className={
+                          item.status === 'price_drop' ? 'bg-green-600/20 text-green-400 border-green-600' :
+                          item.status === 'price_increase' ? 'bg-red-600/20 text-red-400 border-red-600' :
+                          'bg-gray-600/20 text-gray-400 border-gray-600'
+                        }>
+                          {item.status === 'price_drop' ? 'Price Drop!' :
+                           item.status === 'price_increase' ? 'Price Up' :
+                           'No Change'}
+                        </Badge>
+                        
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm">
+                            <Bell className="w-3 h-3 mr-1" />
+                            Alert
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <ExternalLink className="w-3 h-3 mr-1" />
+                            View
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-red-400 hover:text-red-300">
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -162,27 +159,38 @@ export default function SavedPage() {
               <CardDescription>Quick access to your favorite search queries</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {savedSearches.map((search) => (
-                  <div key={search.id} className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg border border-gray-600">
-                    <div className="flex items-center gap-3">
-                      <Search className="w-4 h-4 text-blue-400" />
-                      <div>
-                        <div className="text-white font-medium">{search.query}</div>
-                        <div className="text-sm text-gray-400">{search.country} • Created {search.created}</div>
+              {savedSearches.length === 0 ? (
+                <div className="text-center py-8">
+                  <Search className="w-10 h-10 text-gray-500 mx-auto mb-3" />
+                  <h3 className="text-md font-semibold text-gray-300 mb-2">No saved searches yet</h3>
+                  <p className="text-gray-400 text-sm mb-3">Save your favorite search queries for quick access</p>
+                  <Button size="sm" onClick={() => router.push('/dashboard')}>
+                    Create Search
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {savedSearches.map((search) => (
+                    <div key={search.id} className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg border border-gray-600">
+                      <div className="flex items-center gap-3">
+                        <Search className="w-4 h-4 text-blue-400" />
+                        <div>
+                          <div className="text-white font-medium">{search.query}</div>
+                          <div className="text-sm text-gray-400">{search.country} • Created {search.created}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm">
+                          Search Again
+                        </Button>
+                        <Button variant="outline" size="sm" className="text-red-400 hover:text-red-300">
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm">
-                        Search Again
-                      </Button>
-                      <Button variant="outline" size="sm" className="text-red-400 hover:text-red-300">
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -203,7 +211,7 @@ export default function SavedPage() {
                 <CardTitle className="text-white">Money Saved</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-400">$120</div>
+                <div className="text-2xl font-bold text-green-400">$0</div>
                 <div className="text-sm text-gray-400">From price drops</div>
               </CardContent>
             </Card>
@@ -213,7 +221,7 @@ export default function SavedPage() {
                 <CardTitle className="text-white">Active Alerts</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-orange-400">6</div>
+                <div className="text-2xl font-bold text-orange-400">0</div>
                 <div className="text-sm text-gray-400">Price monitoring</div>
               </CardContent>
             </Card>
