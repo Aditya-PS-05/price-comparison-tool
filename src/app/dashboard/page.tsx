@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import {SearchForm} from '../../components/search/SearchForm';
 import {AnalyzedDealsList} from '../../components/search/AnalyzedDealsList';
 import {GlobalCoverage} from '../../components/search/GlobalCoverage';
@@ -12,6 +14,21 @@ import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 
 export default function Dashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log('Dashboard: Session status:', status);
+    console.log('Dashboard: Session exists:', !!session);
+    
+    if (status === 'loading') return; // Still loading
+    
+    if (status === 'unauthenticated') {
+      console.log('Dashboard: Redirecting to signin');
+      router.push('/auth/signin?callbackUrl=/dashboard');
+    }
+  }, [session, status, router]);
+
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showGlobalCoverage, setShowGlobalCoverage] = useState(false);
@@ -25,6 +42,30 @@ export default function Dashboard() {
     setError(errorMessage);
     setAnalysis(null);
   };
+
+  // Show loading while session is being checked
+  if (status === 'loading') {
+    return (
+      <div className="flex h-screen bg-[#0D0F17] text-white items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render anything if not authenticated (will redirect)
+  if (status === 'unauthenticated') {
+    return (
+      <div className="flex h-screen bg-[#0D0F17] text-white items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-gray-400">Redirecting to login...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-[#0D0F17] text-white">

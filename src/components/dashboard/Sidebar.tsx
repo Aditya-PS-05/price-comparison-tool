@@ -3,14 +3,17 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
 import { 
   Search, 
   Bookmark, 
   History, 
   User,
-  Package
+  Package,
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface SidebarItem {
   name: string;
@@ -27,6 +30,11 @@ const sidebarItems: SidebarItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: '/' });
+  };
 
   return (
     <aside className="w-64 bg-[#1B1E2A] border-r border-gray-700 flex flex-col h-screen">
@@ -42,6 +50,25 @@ export function Sidebar() {
           </div>
         </div>
       </div>
+
+      {/* User Info */}
+      {session && (
+        <div className="p-4 border-b border-gray-700">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+              <User className="w-4 h-4 text-gray-300" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">
+                {session.user?.name || 'User'}
+              </p>
+              <p className="text-xs text-gray-400 truncate">
+                {session.user?.email}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="flex-1 p-4">
@@ -71,6 +98,18 @@ export function Sidebar() {
           })}
         </div>
       </nav>
+
+      {/* Footer */}
+      <div className="p-4 border-t border-gray-700">
+        <Button
+          variant="outline"
+          className="w-full justify-start text-gray-300 border-gray-600 hover:text-white hover:bg-gray-700/50"
+          onClick={handleSignOut}
+        >
+          <LogOut className="w-4 h-4 mr-3" />
+          Sign Out
+        </Button>
+      </div>
     </aside>
   );
 }
