@@ -46,44 +46,43 @@ export default function SignInPage() {
     }
   }
 
-
   return (
-    <div className="min-h-screen bg-[#0D0F17] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 md:p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <Package className="w-6 h-6 text-white" />
+          <div className="flex justify-center mb-4 items-center gap-2 md:gap-3">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-white rounded-lg flex items-center justify-center">
+                <Package className="w-3 h-3 md:w-10 md:h-10 text-black" />
+              </div>
+              <div className="text-lg md:text-2xl font-bold">Price<span className="text-black">Sphere</span></div>
             </div>
-            <h1 className="text-2xl font-bold text-white">PriceSphere</h1>
-          </div>
-          <p className="text-gray-400">Sign in to your account</p>
+          <p className="text-gray-600">Sign in to your account</p>
         </div>
 
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-white border border-gray-200 shadow-lg">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-white text-center">Welcome back</CardTitle>
-            <CardDescription className="text-center">
+            <CardTitle className="text-black text-center text-xl">Welcome back</CardTitle>
+            <CardDescription className="text-center text-gray-600">
               Sign in to access your price comparison dashboard
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <form onSubmit={handleCredentialsSignIn} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-300">Email</Label>
+                <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-300">Password</Label>
+                <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -91,34 +90,34 @@ export default function SignInPage() {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 pr-10"
+                    className="bg-white border-gray-300 text-black placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500 pr-10"
                     required
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
+                      <EyeOff className="h-4 w-4 text-gray-500" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
+                      <Eye className="h-4 w-4 text-gray-500" />
                     )}
                   </Button>
                 </div>
               </div>
 
               {error && (
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-800">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
 
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-gray-700 hover:bg-black text-white rounded-full py-6"
                 disabled={loading}
               >
                 {loading ? 'Signing in...' : 'Sign in'}
@@ -126,22 +125,16 @@ export default function SignInPage() {
             </form>
 
             <div className="text-center text-sm">
-              <span className="text-gray-400">Don&apos;t have an account? </span>
-              <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300">
+              <span className="text-gray-600">Don&apos;t have an account? </span>
+              <Link href="/auth/signup" className="text-gray-700 hover:text-black font-medium">
                 Sign up
               </Link>
-            </div>
-
-            <div className="mt-6 p-3 bg-blue-600/20 border border-blue-600/30 rounded-lg">
-              <p className="text-xs text-blue-300 font-medium mb-1">Demo Credentials:</p>
-              <p className="text-xs text-blue-200">Email: user@example.com</p>
-              <p className="text-xs text-blue-200">Password: password123</p>
             </div>
           </CardContent>
         </Card>
 
         <div className="text-center mt-6">
-          <Link href="/" className="text-gray-400 hover:text-white text-sm">
+          <Link href="/" className="text-gray-600 hover:text-black text-sm">
             ← Back to home
           </Link>
         </div>

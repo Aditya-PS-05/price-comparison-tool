@@ -1,8 +1,6 @@
-// ✅ Cleaned version of SignUpPage.tsx with unused imports removed
 'use client'
 
 import React, { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -70,55 +68,55 @@ export default function SignUpPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#0D0F17] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 md:p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <Package className="w-6 h-6 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white">PriceSphere</h1>
+        <div className="flex justify-center mb-4 items-center gap-2 md:gap-3">
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-white rounded-lg flex items-center justify-center">
+            <Package className="w-3 h-3 md:w-10 md:h-10 text-black" />
           </div>
-          <p className="text-gray-400">Create your account</p>
+          <div className="text-lg md:text-2xl font-bold">Price<span className="text-black">Sphere</span></div>
+        </div>
+          <p className="text-gray-600">Create your account</p>
         </div>
 
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-white border border-gray-200 shadow-lg">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-white text-center">Get started</CardTitle>
-            <CardDescription className="text-center">
+            <CardTitle className="text-black text-center text-xl">Get started</CardTitle>
+            <CardDescription className="text-center text-gray-600">
               Create an account to start comparing prices globally
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-gray-300">Full Name</Label>
+                <Label htmlFor="name" className="text-gray-700 font-medium">Full Name</Label>
                 <Input
                   id="name"
                   type="text"
                   placeholder="John Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-300">Email</Label>
+                <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                  className="bg-white border-gray-300 text-black placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-300">Password</Label>
+                <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -126,23 +124,23 @@ export default function SignUpPage() {
                     placeholder="Create a strong password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 pr-10"
+                    className="bg-white border-gray-300 text-black placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500 pr-10"
                     required
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
+                    {showPassword ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
                   </Button>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-gray-300">Confirm Password</Label>
+                <Label htmlFor="confirmPassword" className="text-gray-700 font-medium">Confirm Password</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
@@ -150,55 +148,55 @@ export default function SignUpPage() {
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 pr-10"
+                    className="bg-white border-gray-300 text-black placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500 pr-10"
                     required
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
-                    {showConfirmPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
                   </Button>
                 </div>
               </div>
 
               {error && (
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-800">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
 
               {success && (
-                <Alert className="border-green-600 bg-green-600/20">
-                  <AlertDescription className="text-green-400">{success}</AlertDescription>
+                <Alert className="bg-green-50 border-green-200">
+                  <AlertDescription className="text-green-800">{success}</AlertDescription>
                 </Alert>
               )}
 
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full bg-gray-700 hover:bg-black text-white rounded-full py-6" disabled={loading}>
                 {loading ? 'Creating account...' : 'Create account'}
               </Button>
             </form>
 
             <div className="text-center text-sm">
-              <span className="text-gray-400">Already have an account? </span>
-              <Link href="/auth/signin" className="text-blue-400 hover:text-blue-300">
+              <span className="text-gray-600">Already have an account? </span>
+              <Link href="/auth/signin" className="text-gray-700 hover:text-black font-medium">
                 Sign in
               </Link>
             </div>
 
             <p className="text-xs text-gray-500 text-center">
               By creating an account, you agree to our{' '}
-              <Link href="/terms" className="text-blue-400 hover:text-blue-300">Terms of Service</Link>{' '}and{' '}
-              <Link href="/privacy" className="text-blue-400 hover:text-blue-300">Privacy Policy</Link>
+              <Link href="/terms" className="text-gray-700 hover:text-black">Terms of Service</Link>{' '}and{' '}
+              <Link href="/privacy" className="text-gray-700 hover:text-black">Privacy Policy</Link>
             </p>
           </CardContent>
         </Card>
 
         <div className="text-center mt-6">
-          <Link href="/" className="text-gray-400 hover:text-white text-sm">
+          <Link href="/" className="text-gray-600 hover:text-black text-sm">
             ← Back to home
           </Link>
         </div>

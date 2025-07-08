@@ -15,10 +15,10 @@ export default function HomePage() {
       {/* Navbar */}
       <nav className="flex justify-between items-center mb-12 md:mb-24">
         <div className="flex items-center gap-2 md:gap-3">
-          <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <Package className="w-3 h-3 md:w-5 md:h-5 text-white" />
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-white rounded-lg flex items-center justify-center">
+            <Package className="w-3 h-3 md:w-7 md:h-7 text-black" />
           </div>
-          <div className="text-lg md:text-2xl font-semibold">Price<span className="text-blue-600">Sphere</span></div>
+          <div className="text-lg md:text-2xl font-semibold">Price<span className="text-black">Sphere</span></div>
         </div>
         
         <div className="flex items-center gap-2 md:gap-3">
