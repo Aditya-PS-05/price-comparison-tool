@@ -94,6 +94,10 @@ Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 🎯 How It Works
 
+![PriceSphere Platform Workflow](./public/flowchart.png)
+
+The PriceSphere platform follows a sophisticated workflow to deliver accurate and relevant product results:
+
 ### 1. Product Search
 - User selects a product and country
 - System queries Google Custom Search API or SerpAPI
@@ -116,6 +120,12 @@ Navigate to [http://localhost:3000](http://localhost:3000)
 - **Past Searches**: View search history with timestamps
 - **Saved Products**: Bookmark products for later
 - **User Preferences**: Set default country and currency
+
+### Workflow Details
+1. **Product Input** - User enters search query and selects target country
+2. **Processing** - Multi-engine search across regional e-commerce sites
+3. **Seller Reliability** - AI validates seller trustworthiness and product availability
+4. **Ranking & Filtering** - Smart algorithms rank results by relevance and deal quality
 
 ## 🗂️ Project Structure
 
