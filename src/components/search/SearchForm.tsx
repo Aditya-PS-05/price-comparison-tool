@@ -133,13 +133,13 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
   ];
 
   return (
-    <Card className="w-full max-w-4xl mx-auto bg-gray-800/50 border-gray-700 text-white">
+    <Card className="w-full max-w-4xl mx-auto bg-gray-900/50 border-gray-800 text-white">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-bold flex items-center justify-center gap-2 text-white">
-          <Package className="w-8 h-8 text-blue-400" />
+          <Package className="w-8 h-8 text-gray-300" />
           Global Price Comparison
         </CardTitle>
-        <CardDescription className="text-gray-300">
+        <CardDescription className="text-gray-400">
           Search for products across <strong className="text-white">{supportedCountries.length} countries</strong> and find the best deals worldwide
         </CardDescription>
       </CardHeader>
@@ -155,7 +155,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="pl-10 text-lg h-12 bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+              className="pl-10 text-lg h-12 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
               disabled={loading}
             />
           </div>
@@ -163,7 +163,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
           {/* Country Select and Button Container */}
           <div className="flex flex-col sm:flex-row gap-3 md:contents">
             <Select value={country} onValueChange={setCountry} disabled={loading}>
-              <SelectTrigger className="w-full sm:w-64 h-12 bg-gray-700 border-gray-600 text-white">
+              <SelectTrigger className="w-full sm:w-64 h-12 bg-gray-800 border-gray-700 text-white">
                 <Globe className="w-4 h-4 mr-2 text-gray-400" />
                 <SelectValue placeholder="Select country" />
               </SelectTrigger>
@@ -207,7 +207,7 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
             <Button 
               onClick={handleSearch} 
               disabled={loading || !query.trim()}
-              className="h-12 px-6 sm:px-8 bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
+              className="h-12 px-6 sm:px-8 bg-gray-700 hover:bg-gray-600 text-white w-full sm:w-auto"
             >
               {loading ? (
                 <>

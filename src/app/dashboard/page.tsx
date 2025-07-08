@@ -67,7 +67,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-[#131416] text-white">
+    <div className="flex h-screen bg-black text-white">
       {/* Sidebar */}
       <Sidebar 
         isMobileOpen={isMobileSidebarOpen} 
@@ -75,9 +75,9 @@ export default function Dashboard() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-[#131416] lg:ml-0">
+      <main className="flex-1 flex flex-col overflow-hidden bg-black lg:ml-0">
         {/* Mobile Header */}
-        <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-700">
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-800">
           <Button
             variant="ghost"
             size="sm"
@@ -100,10 +100,10 @@ export default function Dashboard() {
                 <p className="text-gray-400">Search for products across global markets with AI-powered analysis</p>
               </div>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-green-600/20 text-green-400 border-green-600">
+                <Badge variant="outline" className="bg-gray-800 text-gray-300 border-gray-700">
                   API Online
                 </Badge>
-                <Badge variant="outline" className="bg-blue-600/20 text-blue-400 border-blue-600">
+                <Badge variant="outline" className="bg-gray-800 text-gray-300 border-gray-700">
                   AI Analysis Ready
                 </Badge>
               </div>
@@ -113,10 +113,10 @@ export default function Dashboard() {
             <div className="lg:hidden">
               <p className="text-gray-400 text-sm mb-4">Search for products across global markets with AI-powered analysis</p>
               <div className="flex flex-wrap gap-2 mb-4">
-                <Badge variant="outline" className="bg-green-600/20 text-green-400 border-green-600 text-xs">
+                <Badge variant="outline" className="bg-gray-800 text-gray-300 border-gray-700 text-xs">
                   API Online
                 </Badge>
-                <Badge variant="outline" className="bg-blue-600/20 text-blue-400 border-blue-600 text-xs">
+                <Badge variant="outline" className="bg-gray-800 text-gray-300 border-gray-700 text-xs">
                   AI Analysis Ready
                 </Badge>
               </div>
@@ -136,7 +136,7 @@ export default function Dashboard() {
             {/* Search Mode Indicator */}
             {analysis && (
               <div className="max-w-4xl">
-                <Badge variant="outline" className="mb-4 bg-purple-600/20 text-purple-400 border-purple-600">
+                <Badge variant="outline" className="mb-4 bg-gray-800 text-gray-300 border-gray-700">
                   <Brain className="w-3 h-3 mr-1" />
                   AI-Analyzed Best Deals
                 </Badge>
@@ -149,9 +149,9 @@ export default function Dashboard() {
             {/* No Products Message */}
             {!analysis && !error && (
               <div className="max-w-4xl mt-8 md:mt-16 mx-auto text-center">
-                <div className="bg-gray-800/30 rounded-xl p-6 md:p-12 border border-gray-700">
+                <div className="bg-gray-900/50 rounded-xl p-6 md:p-12 border border-gray-800">
                   <div className="mb-4 md:mb-6">
-                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
                       <Brain className="w-8 h-8 md:w-10 md:h-10 text-gray-400" />
                     </div>
                     <h3 className="text-xl md:text-2xl font-semibold text-white mb-2">No product searched yet</h3>
@@ -168,7 +168,7 @@ export default function Dashboard() {
                         <Badge 
                           key={term} 
                           variant="outline" 
-                          className="cursor-pointer hover:bg-blue-600/20 bg-gray-700/50 border-gray-600 text-gray-300 hover:text-white px-2 md:px-3 py-1 text-xs md:text-sm"
+                          className="cursor-pointer hover:bg-gray-700/50 bg-gray-800/50 border-gray-700 text-gray-300 hover:text-white px-2 md:px-3 py-1 text-xs md:text-sm"
                         >
                           {term}
                         </Badge>

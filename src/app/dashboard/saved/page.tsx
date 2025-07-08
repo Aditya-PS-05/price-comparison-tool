@@ -67,15 +67,15 @@ export default function SavedPage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#0D0F17] text-white">
+    <div className="flex h-screen bg-black text-white">
       <Sidebar 
         isMobileOpen={isMobileSidebarOpen} 
         onMobileClose={() => setIsMobileSidebarOpen(false)} 
       />
       
-      <main className="flex-1 flex flex-col overflow-hidden bg-[#11131C] lg:ml-0">
+      <main className="flex-1 flex flex-col overflow-hidden bg-black lg:ml-0">
         {/* Mobile Header */}
-        <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-700">
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-800">
           <Button
             variant="ghost"
             size="sm"
@@ -123,7 +123,7 @@ export default function SavedPage() {
             </div>
 
           {/* Saved Products */}
-          <Card className="bg-gray-800/50 border-gray-700">
+          <Card className="bg-gray-900/50 border-gray-800">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Heart className="w-5 h-5" />
@@ -203,7 +203,7 @@ export default function SavedPage() {
           </Card>
 
           {/* Saved Searches */}
-          <Card className="bg-gray-800/50 border-gray-700">
+          <Card className="bg-gray-900/50 border-gray-800">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Search className="w-5 h-5" />
@@ -249,7 +249,7 @@ export default function SavedPage() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              <Card className="bg-gray-800/50 border-gray-700">
+              <Card className="bg-gray-900/50 border-gray-800">
                 <CardHeader className="pb-2 md:pb-3">
                   <CardTitle className="text-white text-sm md:text-base">Total Saved</CardTitle>
                 </CardHeader>
@@ -259,7 +259,7 @@ export default function SavedPage() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-800/50 border-gray-700">
+              <Card className="bg-gray-900/50 border-gray-800">
                 <CardHeader className="pb-2 md:pb-3">
                   <CardTitle className="text-white text-sm md:text-base">Money Saved</CardTitle>
                 </CardHeader>

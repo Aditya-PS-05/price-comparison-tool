@@ -71,12 +71,12 @@ export default function SignUpPage() {
     <div className="min-h-screen bg-white flex items-center justify-center p-4 md:p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-        <div className="flex justify-center mb-4 items-center gap-2 md:gap-3">
-          <div className="w-6 h-6 md:w-8 md:h-8 bg-white rounded-lg flex items-center justify-center">
-            <Package className="w-3 h-3 md:w-10 md:h-10 text-black" />
+          <div className="flex justify-center mb-4 items-center gap-2 md:gap-3">
+            <div className="w-6 h-6 md:w-8 md:h-8 bg-white rounded-lg flex items-center justify-center">
+              <Package className="w-3 h-3 md:w-10 md:h-10 text-black" />
+            </div>
+            <div className="text-lg md:text-2xl font-bold">Price<span className="text-black">Sphere</span></div>
           </div>
-          <div className="text-lg md:text-2xl font-bold">Price<span className="text-black">Sphere</span></div>
-        </div>
           <p className="text-gray-600">Create your account</p>
         </div>
 

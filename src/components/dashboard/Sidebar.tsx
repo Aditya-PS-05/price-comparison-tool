@@ -54,19 +54,19 @@ export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
       
       {/* Sidebar */}
       <aside className={cn(
-        "w-64 bg-[#1E1F21] border-r border-gray-700 flex flex-col h-screen transition-transform duration-300 ease-in-out z-50",
+        "w-64 bg-black border-r border-gray-800 flex flex-col h-screen transition-transform duration-300 ease-in-out z-50",
         "lg:translate-x-0 lg:static lg:z-auto",
         isMobileOpen ? "fixed translate-x-0" : "fixed -translate-x-full lg:translate-x-0"
       )}>
       {/* Header */}
-      <div className="p-4 md:p-6 border-b border-gray-700">
+      <div className="p-4 md:p-6 border-b border-gray-800">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <Package className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+              <Package className="w-5 h-5 text-black" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white">PriceSphere</h1>
+              <h1 className="text-lg font-bold text-white">Price<span className="text-white">Sphere</span></h1>
               <p className="text-xs text-gray-400">Global Price Comparison</p>
             </div>
           </div>
@@ -85,9 +85,9 @@ export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
 
       {/* User Info */}
       {session && (
-        <div className="p-4 border-b border-gray-700">
+        <div className="p-4 border-b border-gray-800">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center">
               <User className="w-4 h-4 text-gray-300" />
             </div>
             <div className="flex-1 min-w-0">
@@ -116,13 +116,13 @@ export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
                 className={cn(
                   "flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-all duration-200",
                   isActive
-                    ? "bg-[#8EA1FE] text-black shadow-lg"
-                    : "text-gray-300 hover:text-white hover:bg-gray-700/50"
+                    ? "bg-gray-800 text-white shadow-lg"
+                    : "text-gray-400 hover:text-white hover:bg-gray-900/50"
                 )}
               >
                 <Icon className={cn(
                   "w-5 h-5 flex-shrink-0",
-                  isActive ? "text-black" : "text-gray-400"
+                  isActive ? "text-white" : "text-gray-400"
                 )} />
                 <span className="font-medium">{item.name}</span>
               </Link>
@@ -132,10 +132,10 @@ export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-700">
+      <div className="p-4 border-t border-gray-800">
         <Button
           variant="outline"
-          className="w-full justify-start text-gray-300 border-gray-600 hover:text-black bg-gray-700/50 hover:bg-[#8EA1FE]"
+          className="w-full justify-start text-gray-300 border-gray-800 hover:text-white bg-gray-900/50 hover:bg-gray-800"
           onClick={handleSignOut}
         >
           <LogOut className="w-4 h-4 mr-3" />
