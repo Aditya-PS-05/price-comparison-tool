@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpRight, Package, LogIn, UserPlus, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/base/Footer";
-import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -90,16 +89,19 @@ export default function HomePage() {
 
       </div>
 
-      {/* Dashboard Image Section */}
+      {/* Dashboard Video Section */}
       <div className="my-16 md:my-32 w-full flex justify-center">
         <div className="bg-[#ECEFF5] rounded-2xl md:rounded-3xl p-3 md:p-6 lg:p-10 w-full max-w-5xl">
-          <Image
-            src="/dashboard/image.png"
-            alt="Dashboard UI Preview"
-            width={1000}
-            height={600}
+          <video
+            src="/video/ui.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
             className="rounded-lg md:rounded-xl shadow-xl w-full h-auto"
-          />
+          >
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
 

@@ -60,23 +60,29 @@ Transform raw, unfiltered search results into a curated selection of the absolut
 
 ## ADVANCED ANALYSIS TECHNIQUES
 
+### Product Matching Accuracy:
+- **Exact Name Matching**: Ensure product names precisely match search intent
+- **Specification Alignment**: Verify product features align with user needs
+- **Brand Authenticity**: Confirm products are genuine, not counterfeit
+- **Model/Version Accuracy**: Ensure correct product variants and generations
+
 ### Price Intelligence:
-- **Market Price Benchmarking**: Compare against known market rates
-- **Historical Context**: Consider if current price represents good timing
-- **Total Cost Analysis**: Factor in shipping, taxes, returns, warranty
-- **Value Density**: Price per feature, specification, or unit of utility
+- **Currency Localization**: Use correct currency symbols and formatting for each country
+- **Price Extraction**: Parse exact prices from titles and snippets accurately
+- **Discount Verification**: Distinguish real discounts from fake "original prices"
+- **Total Cost Analysis**: Factor in visible shipping, taxes, and additional fees
 
 ### Retailer Trust Assessment:
-- **Reputation Scoring**: Weight deals by retailer reliability
-- **Return Policy Analysis**: Consider customer protection and satisfaction guarantees
-- **Shipping Speed**: Factor delivery timeframes into deal quality
-- **Customer Service**: Account for post-purchase support quality
+- **Platform Verification**: Prioritize known, established e-commerce platforms
+- **Regional Relevance**: Focus on retailers popular in the target country
+- **Purchase Capability**: Ensure retailers actually serve the target market
+- **Return Policy**: Consider customer protection and satisfaction guarantees
 
-### Deal Authenticity Verification:
-- **Discount Validation**: Ensure claimed savings are legitimate
-- **Availability Confirmation**: Verify actual stock and purchase capability
-- **Price Stability**: Assess if pricing is temporary promotion or standard rate
-- **Competitive Analysis**: Compare similar offers across multiple retailers
+### Availability Validation:
+- **Stock Status Parsing**: Extract real availability information from snippets
+- **Purchase Path Verification**: Ensure links lead to actual product pages
+- **Shipping Capability**: Confirm delivery to target country
+- **Real-time Accuracy**: Prioritize recent, up-to-date product listings
 
 ## RESPONSE OPTIMIZATION
 
@@ -86,11 +92,11 @@ Transform raw, unfiltered search results into a curated selection of the absolut
 - **Retailer Trust**: 20% - How reliable and reputable is the seller?
 - **Purchase Readiness**: 10% - How easy is it to complete the transaction?
 
-### Deal Quality Classification:
-- **Excellent (9.0-10.0)**: Outstanding savings, premium retailer, perfect match
-- **Good (7.0-8.9)**: Solid value, trusted seller, good relevance
-- **Acceptable (6.0-6.9)**: Fair deal, decent retailer, adequate match
-- **EXCLUDE (Below 6.0)**: Don't include in results
+### Product Quality Classification:
+- **Excellent (9.0-10.0)**: Perfect product match, premium retailer, accurate pricing, confirmed availability
+- **Good (7.0-8.9)**: Good product match, trusted seller, visible pricing, likely available
+- **Average (5.0-6.9)**: Decent product match, known retailer, some pricing info, unclear availability
+- **EXCLUDE (Below 5.0)**: Poor match, unknown retailer, unclear pricing, or unavailable
 
 ### Ranking Priorities:
 1. **Unique/Hard-to-Find Items**: Rare products or limited availability
@@ -150,55 +156,73 @@ Remember: Your role is not just to filter search results, but to serve as a trus
 export const DEAL_ANALYSIS_USER_PROMPT_TEMPLATE = (query: string, country: string) => `
 Search Query: "${query}"
 Country: ${country}
-Analysis Task: Find the absolute best shopping deals and opportunities
+Analysis Task: Extract the most accurate and relevant product listings
 
-Please analyze the search results below and extract ONLY the highest-quality deals that represent genuine value for someone looking to purchase "${query}".
+You are analyzing search results to find ACTUAL PURCHASABLE PRODUCTS for "${query}" in ${country}. Your goal is MAXIMUM ACCURACY - only include results that are:
 
-Apply your expert knowledge to:
-1. **Filter ruthlessly** - Include only results that offer real shopping opportunities
-2. **Prioritize value** - Focus on deals with clear savings or competitive advantages
-3. **Ensure relevance** - Every result must directly relate to purchasing "${query}"
-4. **Verify legitimacy** - Only include reputable retailers and authentic deals
-5. **Optimize for action** - Present deals that users can confidently purchase
+1. **EXACT PRODUCT MATCHES**: The product must closely match what the user is searching for
+2. **REAL SHOPPING LINKS**: Direct product pages where users can actually buy the item
+3. **ACCURATE PRICING**: Extract exact prices, discounts, and currency information
+4. **VERIFIED AVAILABILITY**: Only include products that are actually in stock
+5. **LEGITIMATE RETAILERS**: Focus on trusted, well-known e-commerce platforms
 
-STRICT QUALITY REQUIREMENTS:
-- Maximum 15 deals total (quality over quantity)
-- Only "excellent" and "good" quality ratings
-- Zero tolerance for: app stores, news, reviews, informational content
-- Must have clear purchase path and pricing information
-- Prioritize deals with visible discounts or competitive pricing
+CRITICAL ACCURACY REQUIREMENTS:
+- ZERO TOLERANCE for non-shopping content (news, reviews, blogs, social media)
+- ZERO TOLERANCE for app store listings, software downloads, or digital content
+- ZERO TOLERANCE for informational pages, comparison articles, or guides
+- ZERO TOLERANCE for broken links, redirects, or unavailable products
+- ZERO TOLERANCE for fake discounts or misleading pricing
 
-For each qualified deal, provide:
-- Exact value proposition (price, discount, unique benefit)
-- Retailer reputation assessment
-- Specific reasons why this deal stands out
-- Any time sensitivity or availability constraints
-- Who would benefit most from this offer
-- Include product image if available for visual appeal
+PRIORITIZE THESE RETAILERS (when available):
+- **US**: Amazon, Walmart, Best Buy, Target, Apple Store, Costco, Home Depot
+- **India**: Amazon India, Flipkart, Myntra, Snapdeal, Paytm Mall, BigBasket
+- **China**: Tmall, Taobao, JD.com, Suning, Gome, Amazon China
+- **Europe**: Amazon (local), Otto, Zalando, MediaMarkt, Fnac, Currys
+- **Other regions**: Local market leaders and official brand stores
+
+EXTRACTION ACCURACY:
+- Parse exact product names from titles (remove marketing fluff)
+- Extract precise prices with correct currency symbols
+- Identify genuine discounts vs. fake "original prices"
+- Determine actual stock status from snippets
+- Verify seller legitimacy and reputation
+
+QUALITY SCORING CRITERIA:
+- **Excellent (9.0+)**: Perfect match, trusted retailer, clear pricing, definitely available
+- **Good (7.0-8.9)**: Good match, known retailer, visible pricing, likely available
+- **Average (5.0-6.9)**: Decent match, acceptable retailer, some pricing info
+- **Poor (below 5.0)**: DO NOT INCLUDE - poor match, unknown retailer, unclear pricing
+
+RETURN MAXIMUM 20 RESULTS, PRIORITIZED BY:
+1. Product relevance and accuracy
+2. Retailer trustworthiness and reputation
+3. Pricing clarity and competitiveness
+4. Availability and stock status
+5. Deal quality and value proposition
 
 Return results in this JSON structure:
 {
   "deals": [
     {
-      "title": "Clear, descriptive product title",
-      "url": "Direct product page URL",
-      "price": "Exact price if visible (e.g., '$299.99')",
-      "currency": "Currency code (e.g., 'USD')",
-      "discount": "Discount details if any (e.g., '25% off', 'Save $50')",
-      "availability": "Stock status (e.g., 'In Stock', 'Limited Quantity')",
-      "seller": "Retailer name",
+      "title": "Exact product name as it appears on retailer site",
+      "url": "Direct product page URL (verify it's a real product page)",
+      "price": "Exact price with currency symbol (e.g., '$299.99', '₹15,999', '€249.99')",
+      "currency": "ISO currency code (e.g., 'USD', 'INR', 'EUR', 'CNY')",
+      "discount": "Actual discount if visible (e.g., '25% off', 'Save $50', 'Was $399')",
+      "availability": "Real stock status (e.g., 'In Stock', 'Limited Stock', 'Available')",
+      "seller": "Exact retailer name (e.g., 'Amazon', 'Flipkart', 'Best Buy')",
       "relevanceScore": 0.95,
       "dealQuality": "excellent",
       "image": "Product image URL if available",
       "thumbnail": "Thumbnail image URL if available", 
       "reasons": [
-        "Specific reason why this is valuable",
-        "Competitive advantage or unique benefit",
-        "Time sensitivity or special consideration"
+        "Why this product exactly matches the search query",
+        "Why this retailer is trustworthy for this purchase",
+        "Why this price/deal represents good value"
       ]
     }
   ],
-  "summary": "Brief analysis of the deal landscape and key recommendations"
+  "summary": "Overview of search results quality and top recommendations for purchasing"
 }
 
 Search Results to Analyze:

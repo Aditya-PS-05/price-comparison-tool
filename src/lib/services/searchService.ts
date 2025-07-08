@@ -1,6 +1,7 @@
 import { ApiService, SearchResult } from './apiService';
 import { RegionMapper } from './regionMapper';
 import { ProductAvailabilityChecker, SearchResultWithAvailability } from './productAvailabilityChecker';
+import { ProductDataExtractor, ExtractedProductData } from './productDataExtractor';
 
 export interface SearchOptions {
   maxResults?: number;
@@ -13,6 +14,7 @@ export interface SearchContext {
   country: string;
   searchResults: SearchResult[];
   availableResults?: SearchResultWithAvailability[];
+  extractedProducts?: ExtractedProductData[];
   searchEngine: string;
   timestamp: string;
   availabilityStats?: {
@@ -39,46 +41,66 @@ export class SearchService {
       const countryCode = country.toUpperCase();
       const regionalSites = RegionMapper.getSearchDomains(countryCode);
       
-      // Build localized search query with site restrictions
-      const localizedQuery = RegionMapper.getLocalizedSearchQuery(query, countryCode);
-      const searchQuery = `${localizedQuery} price ${new Date().getFullYear()} site:${regionalSites.join(' OR site:')}`;
+      // Enhanced query building with multiple search strategies
+      const searches = this.buildEnhancedSearchQueries(query, countryCode, regionalSites);
       
-      // Try Google Custom Search first, then SerpAPI
-      let searchResults: SearchResult[] = [];
+      let allResults: SearchResult[] = [];
       let searchEngine = 'none';
       
-      if (this.apiService.isGoogleSearchConfigured()) {
-        searchResults = await this.apiService.googleCustomSearch({
-          query: searchQuery,
-          country: countryCode,
-          maxResults: options.maxResults || 100
-        });
-        searchEngine = 'google_custom_search';
+      // Execute multiple search strategies
+      for (const searchQuery of searches) {
+        let searchResults: SearchResult[] = [];
+        
+        if (this.apiService.isGoogleSearchConfigured()) {
+          searchResults = await this.apiService.googleCustomSearch({
+            query: searchQuery,
+            country: countryCode,
+            maxResults: Math.min(options.maxResults || 50, 50)
+          });
+          searchEngine = 'google_custom_search';
+        }
+        
+        if (searchResults.length === 0 && this.apiService.isSerpApiConfigured()) {
+          searchResults = await this.apiService.serpApiSearch({
+            query: searchQuery,
+            country: countryCode,
+            maxResults: Math.min(options.maxResults || 50, 50)
+          });
+          searchEngine = 'serpapi';
+        }
+        
+        allResults = allResults.concat(searchResults);
+        
+        // Break early if we have enough results
+        if (allResults.length >= (options.maxResults || 100)) {
+          break;
+        }
       }
       
-      if (searchResults.length === 0 && this.apiService.isSerpApiConfigured()) {
-        searchResults = await this.apiService.serpApiSearch({
-          query: searchQuery,
-          country: countryCode,
-          maxResults: options.maxResults || 100
-        });
-        searchEngine = 'serpapi';
-      }
+      // Remove duplicates based on URL
+      const uniqueResults = this.removeDuplicateResults(allResults);
       
-      console.log(`Found ${searchResults.length} search results for "${query}" in ${country}`);
+      console.log(`Found ${uniqueResults.length} unique search results for "${query}" in ${country}`);
       
-      // Check availability of products
-      const resultsWithAvailability = await ProductAvailabilityChecker.batchAvailabilityCheck(searchResults);
-      const availableResults = ProductAvailabilityChecker.filterAvailableProducts(resultsWithAvailability, 0.5);
+      // Enhanced availability checking with better accuracy
+      const resultsWithAvailability = await ProductAvailabilityChecker.batchAvailabilityCheck(uniqueResults);
+      const availableResults = ProductAvailabilityChecker.filterAvailableProducts(resultsWithAvailability, 0.4);
       const availabilityStats = ProductAvailabilityChecker.getAvailabilitySummary(resultsWithAvailability);
       
+      // Enhanced product data extraction
+      const extractedProducts = ProductDataExtractor.batchExtractProductData(uniqueResults, countryCode);
+      const filteredProducts = ProductDataExtractor.filterByConfidence(extractedProducts, 0.5);
+      const sortedProducts = ProductDataExtractor.sortByRelevance(filteredProducts);
+      
       console.log(`Availability: ${availabilityStats.available}/${availabilityStats.total} available products`);
+      console.log(`Extracted: ${sortedProducts.length} high-confidence products`);
       
       return {
         query,
         country: countryCode,
-        searchResults,
+        searchResults: uniqueResults,
         availableResults,
+        extractedProducts: sortedProducts,
         searchEngine,
         timestamp: new Date().toISOString(),
         availabilityStats
@@ -90,6 +112,7 @@ export class SearchService {
         country: country.toUpperCase(),
         searchResults: [],
         availableResults: [],
+        extractedProducts: [],
         searchEngine: 'error',
         timestamp: new Date().toISOString(),
         availabilityStats: { total: 0, available: 0, withPrice: 0, highConfidence: 0 }
@@ -135,6 +158,47 @@ export class SearchService {
       timestamp: searchContext.timestamp,
       availabilityStats: searchContext.availabilityStats
     };
+  }
+
+  private buildEnhancedSearchQueries(query: string, countryCode: string, sites: string[]): string[] {
+    const queries: string[] = [];
+    const currentYear = new Date().getFullYear();
+    
+    // Strategy 1: Targeted shopping sites with price keywords
+    const topSites = sites.slice(0, 5);
+    queries.push(`"${query}" price buy ${currentYear} site:${topSites.join(' OR site:')}`);
+    
+    // Strategy 2: Broader product search with shopping keywords
+    queries.push(`${query} shop online store price ${currentYear}`);
+    
+    // Strategy 3: Deal and discount focused search
+    queries.push(`"${query}" discount sale deal offer ${currentYear}`);
+    
+    // Strategy 4: Country-specific localized search
+    const localizedQuery = RegionMapper.getLocalizedSearchQuery(query, countryCode);
+    queries.push(`${localizedQuery} ${currentYear}`);
+    
+    // Strategy 5: Product availability check
+    queries.push(`"${query}" available "in stock" buy now ${currentYear}`);
+    
+    return queries;
+  }
+  
+  private removeDuplicateResults(results: SearchResult[]): SearchResult[] {
+    const seen = new Set<string>();
+    const unique: SearchResult[] = [];
+    
+    for (const result of results) {
+      // Normalize URL for comparison
+      const normalizedUrl = result.url.replace(/[?#].*$/, '').toLowerCase();
+      
+      if (!seen.has(normalizedUrl)) {
+        seen.add(normalizedUrl);
+        unique.push(result);
+      }
+    }
+    
+    return unique;
   }
 
   private getRegionName(countryCode: string): string {
