@@ -146,8 +146,9 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
       
       <CardContent className="space-y-6">
         {/* Main Search Form */}
-        <div className="flex gap-3">
-          <div className="flex-1 relative">
+        <div className="flex flex-col md:flex-row gap-3">
+          {/* Search Input - Full width on mobile, flex-1 on desktop */}
+          <div className="w-full md:flex-1 relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Search for any product... (e.g., iPhone 16 Pro, 128GB)"
@@ -159,11 +160,13 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
             />
           </div>
           
-          <Select value={country} onValueChange={setCountry} disabled={loading}>
-            <SelectTrigger className="w-64 h-12 bg-gray-700 border-gray-600 text-white">
-              <Globe className="w-4 h-4 mr-2 text-gray-400" />
-              <SelectValue placeholder="Select country" />
-            </SelectTrigger>
+          {/* Country Select and Button Container */}
+          <div className="flex flex-col sm:flex-row gap-3 md:contents">
+            <Select value={country} onValueChange={setCountry} disabled={loading}>
+              <SelectTrigger className="w-full sm:w-64 h-12 bg-gray-700 border-gray-600 text-white">
+                <Globe className="w-4 h-4 mr-2 text-gray-400" />
+                <SelectValue placeholder="Select country" />
+              </SelectTrigger>
             <SelectContent className="max-h-96 bg-gray-800 border-gray-700 text-white">
               {Object.entries(countriesByRegion).map(([regionName, countries]) => (
                 <div key={regionName}>
@@ -199,25 +202,28 @@ export function SearchForm({ onAnalysis, onError }: SearchFormProps) {
                 </div>
               ))}
             </SelectContent>
-          </Select>
-          
-          <Button 
-            onClick={handleSearch} 
-            disabled={loading || !query.trim()}
-            className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Searching & Analyzing...
-              </>
-            ) : (
-              <>
-                <Brain className="w-4 h-4 mr-2" />
-                Find Best Deals
-              </>
-            )}
-          </Button>
+            </Select>
+            
+            <Button 
+              onClick={handleSearch} 
+              disabled={loading || !query.trim()}
+              className="h-12 px-6 sm:px-8 bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <span className="hidden sm:inline">Searching & Analyzing...</span>
+                  <span className="sm:hidden">Searching...</span>
+                </>
+              ) : (
+                <>
+                  <Brain className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Find Best Deals</span>
+                  <span className="sm:hidden">Search</span>
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         {/* Search Info */}

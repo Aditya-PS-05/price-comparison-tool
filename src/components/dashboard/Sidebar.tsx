@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
@@ -10,7 +10,9 @@ import {
   History, 
   User,
   Package,
-  LogOut
+  LogOut,
+  Menu,
+  X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -28,7 +30,12 @@ const sidebarItems: SidebarItem[] = [
   { name: "Profile", icon: User, href: "/dashboard/profile" }
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  isMobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
 
@@ -37,17 +44,43 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#1E1F21] border-r border-gray-700 flex flex-col h-screen">
+    <>
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={onMobileClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <aside className={cn(
+        "w-64 bg-[#1E1F21] border-r border-gray-700 flex flex-col h-screen transition-transform duration-300 ease-in-out z-50",
+        "lg:translate-x-0 lg:static lg:z-auto",
+        isMobileOpen ? "fixed translate-x-0" : "fixed -translate-x-full lg:translate-x-0"
+      )}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-700">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <Package className="w-5 h-5 text-white" />
+      <div className="p-4 md:p-6 border-b border-gray-700">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <Package className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-white">PriceSphere</h1>
+              <p className="text-xs text-gray-400">Global Price Comparison</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-white">PriceSphere</h1>
-            <p className="text-xs text-gray-400">Global Price Comparison</p>
-          </div>
+          
+          {/* Mobile Close Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="lg:hidden text-gray-400 hover:text-white"
+            onClick={onMobileClose}
+          >
+            <X className="w-5 h-5" />
+          </Button>
         </div>
       </div>
 
@@ -111,5 +144,6 @@ export function Sidebar() {
         </Button>
       </div>
     </aside>
+    </>
   );
 }

@@ -7,7 +7,7 @@ import { Sidebar } from '../../../components/dashboard/Sidebar';
 import { Badge } from '../../../components/ui/badge';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { History, Search, ExternalLink, Calendar, Clock } from 'lucide-react';
+import { History, Search, ExternalLink, Calendar, Clock, Menu } from 'lucide-react';
 
 interface PastSearch {
   id: number;
@@ -25,6 +25,7 @@ export default function PastSearchesPage() {
   const router = useRouter();
   const [pastSearches, setPastSearches] = useState<PastSearch[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -57,9 +58,28 @@ export default function PastSearchesPage() {
 
   return (
     <div className="flex h-screen bg-[#0D0F17] text-white">
-      <Sidebar />
+      <Sidebar 
+        isMobileOpen={isMobileSidebarOpen} 
+        onMobileClose={() => setIsMobileSidebarOpen(false)} 
+      />
       
-      <main className="flex-1 p-6 overflow-y-auto bg-[#11131C]">
+      <main className="flex-1 flex flex-col overflow-hidden bg-[#11131C] lg:ml-0">
+        {/* Mobile Header */}
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-700">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-gray-400 hover:text-white"
+            onClick={() => setIsMobileSidebarOpen(true)}
+          >
+            <Menu className="w-6 h-6" />
+          </Button>
+          <h1 className="text-lg font-bold text-white">Past Searches</h1>
+          <div></div>
+        </div>
+
+        {/* Content Area */}
+        <div className="flex-1 p-4 md:p-6 overflow-y-auto">
         <div className="space-y-8">
           {/* Page Header */}
           <div className="flex items-center justify-between">
@@ -193,6 +213,7 @@ export default function PastSearchesPage() {
               </CardContent>
             </Card>
           </div>
+        </div>
         </div>
       </main>
     </div>

@@ -1,16 +1,18 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Sidebar } from '../../../components/dashboard/Sidebar';
 import { Badge } from '../../../components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { User, Mail, Globe, Clock } from 'lucide-react';
+import { User, Mail, Globe, Clock, Menu } from 'lucide-react';
+import { Button } from '../../../components/ui/button';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -37,99 +39,119 @@ export default function ProfilePage() {
 
   return (
     <div className="flex h-screen bg-[#131416] text-white">
-      <Sidebar />
+      <Sidebar 
+        isMobileOpen={isMobileSidebarOpen} 
+        onMobileClose={() => setIsMobileSidebarOpen(false)} 
+      />
       
-      <main className="flex-1 p-6 overflow-y-auto bg-[#131416]">
-        <div className="space-y-8">
-          {/* Page Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">Profile</h1>
-              <p className="text-gray-400">Your account information</p>
+      <main className="flex-1 flex flex-col overflow-hidden bg-[#131416] lg:ml-0">
+        {/* Mobile Header */}
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-700">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-gray-400 hover:text-white"
+            onClick={() => setIsMobileSidebarOpen(true)}
+          >
+            <Menu className="w-6 h-6" />
+          </Button>
+          <h1 className="text-lg font-bold text-white">Profile</h1>
+          <div></div>
+        </div>
+
+        {/* Content Area */}
+        <div className="flex-1 p-4 md:p-6 overflow-y-auto">
+          <div className="space-y-8">
+            {/* Page Header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-white">Profile</h1>
+                <p className="text-gray-400">Your account information</p>
+              </div>
+              <Badge variant="outline" className="bg-green-600/20 text-green-400 border-green-600">
+                <User className="w-3 h-3 mr-1" />
+                Active Account
+              </Badge>
             </div>
-            <Badge variant="outline" className="bg-green-600/20 text-green-400 border-green-600">
-              <User className="w-3 h-3 mr-1" />
-              Active Account
-            </Badge>
+
+            {/* User Information */}
+            <Card className="bg-[#131416] border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  Account Information
+                </CardTitle>
+                <CardDescription>Your basic account details</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
+                      <User className="w-5 h-5 text-blue-400" />
+                      <div>
+                        <div className="text-sm text-gray-400">Full Name</div>
+                        <div className="text-white">{session.user?.name || 'Not provided'}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
+                      <Mail className="w-5 h-5 text-green-400" />
+                      <div>
+                        <div className="text-sm text-gray-400">Email Address</div>
+                        <div className="text-white">{session.user?.email}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
+                      <Globe className="w-5 h-5 text-purple-400" />
+                      <div>
+                        <div className="text-sm text-gray-400">Default Country</div>
+                        <div className="text-white">{session.user?.defaultCountry || 'US'}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
+                      <Clock className="w-5 h-5 text-orange-400" />
+                      <div>
+                        <div className="text-sm text-gray-400">Preferred Currency</div>
+                        <div className="text-white">{session.user?.defaultCurrency || 'USD'}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Account Stats */}
+            <Card className="bg-[#131416] border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white">Account Statistics</CardTitle>
+                <CardDescription>Your activity and usage overview</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div className="text-center p-4 bg-gray-700/30 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-400">0</div>
+                    <div className="text-sm text-gray-400">Total Searches</div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-700/30 rounded-lg">
+                    <div className="text-2xl font-bold text-green-400">0</div>
+                    <div className="text-sm text-gray-400">Saved Items</div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-700/30 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-400">0</div>
+                    <div className="text-sm text-gray-400">Active Alerts</div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-700/30 rounded-lg">
+                    <div className="text-2xl font-bold text-orange-400">$0</div>
+                    <div className="text-sm text-gray-400">Money Saved</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-
-          {/* User Information */}
-          <Card className="bg-[#131416] border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <User className="w-5 h-5" />
-                Account Information
-              </CardTitle>
-              <CardDescription>Your basic account details</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
-                    <User className="w-5 h-5 text-blue-400" />
-                    <div>
-                      <div className="text-sm text-gray-400">Full Name</div>
-                      <div className="text-white">{session.user?.name || 'Not provided'}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
-                    <Mail className="w-5 h-5 text-green-400" />
-                    <div>
-                      <div className="text-sm text-gray-400">Email Address</div>
-                      <div className="text-white">{session.user?.email}</div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
-                    <Globe className="w-5 h-5 text-purple-400" />
-                    <div>
-                      <div className="text-sm text-gray-400">Default Country</div>
-                      <div className="text-white">{session.user?.defaultCountry || 'US'}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
-                    <Clock className="w-5 h-5 text-orange-400" />
-                    <div>
-                      <div className="text-sm text-gray-400">Preferred Currency</div>
-                      <div className="text-white">{session.user?.defaultCurrency || 'USD'}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Account Stats */}
-          <Card className="bg-[#131416] border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-white">Account Statistics</CardTitle>
-              <CardDescription>Your activity and usage overview</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div className="text-center p-4 bg-gray-700/30 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-400">0</div>
-                  <div className="text-sm text-gray-400">Total Searches</div>
-                </div>
-                <div className="text-center p-4 bg-gray-700/30 rounded-lg">
-                  <div className="text-2xl font-bold text-green-400">0</div>
-                  <div className="text-sm text-gray-400">Saved Items</div>
-                </div>
-                <div className="text-center p-4 bg-gray-700/30 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-400">0</div>
-                  <div className="text-sm text-gray-400">Active Alerts</div>
-                </div>
-                <div className="text-center p-4 bg-gray-700/30 rounded-lg">
-                  <div className="text-2xl font-bold text-orange-400">$0</div>
-                  <div className="text-sm text-gray-400">Money Saved</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </main>
     </div>

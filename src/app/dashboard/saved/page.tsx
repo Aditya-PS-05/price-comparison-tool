@@ -7,7 +7,7 @@ import { Sidebar } from '../../../components/dashboard/Sidebar';
 import { Badge } from '../../../components/ui/badge';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Bookmark, Search, ExternalLink, Trash2, Bell, Heart, BookmarkX } from 'lucide-react';
+import { Bookmark, Search, ExternalLink, Trash2, Bell, Heart, BookmarkX, Menu } from 'lucide-react';
 
 interface SavedItem {
   id: string;
@@ -34,6 +34,7 @@ export default function SavedPage() {
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
   const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -67,26 +68,59 @@ export default function SavedPage() {
 
   return (
     <div className="flex h-screen bg-[#0D0F17] text-white">
-      <Sidebar />
+      <Sidebar 
+        isMobileOpen={isMobileSidebarOpen} 
+        onMobileClose={() => setIsMobileSidebarOpen(false)} 
+      />
       
-      <main className="flex-1 p-6 overflow-y-auto bg-[#11131C]">
-        <div className="space-y-8">
-          {/* Page Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">Saved Items</h1>
-              <p className="text-gray-400">Track your favorite products and searches</p>
+      <main className="flex-1 flex flex-col overflow-hidden bg-[#11131C] lg:ml-0">
+        {/* Mobile Header */}
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-700">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-gray-400 hover:text-white"
+            onClick={() => setIsMobileSidebarOpen(true)}
+          >
+            <Menu className="w-6 h-6" />
+          </Button>
+          <h1 className="text-lg font-bold text-white">Saved Items</h1>
+          <div></div>
+        </div>
+
+        {/* Content Area */}
+        <div className="flex-1 p-4 md:p-6 overflow-y-auto">
+          <div className="space-y-6 md:space-y-8">
+            {/* Page Header - Desktop */}
+            <div className="hidden lg:flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-white">Saved Items</h1>
+                <p className="text-gray-400">Track your favorite products and searches</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="bg-blue-600/20 text-blue-400 border-blue-600">
+                  <Bookmark className="w-3 h-3 mr-1" />
+                  {savedItems.length} items
+                </Badge>
+                <Badge variant="outline" className="bg-green-600/20 text-green-400 border-green-600">
+                  2 price drops
+                </Badge>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="bg-blue-600/20 text-blue-400 border-blue-600">
-                <Bookmark className="w-3 h-3 mr-1" />
-                {savedItems.length} items
-              </Badge>
-              <Badge variant="outline" className="bg-green-600/20 text-green-400 border-green-600">
-                2 price drops
-              </Badge>
+
+            {/* Mobile Header Info */}
+            <div className="lg:hidden">
+              <p className="text-gray-400 text-sm mb-4">Track your favorite products and searches</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge variant="outline" className="bg-blue-600/20 text-blue-400 border-blue-600 text-xs">
+                  <Bookmark className="w-3 h-3 mr-1" />
+                  {savedItems.length} items
+                </Badge>
+                <Badge variant="outline" className="bg-green-600/20 text-green-400 border-green-600 text-xs">
+                  2 price drops
+                </Badge>
+              </div>
             </div>
-          </div>
 
           {/* Saved Products */}
           <Card className="bg-gray-800/50 border-gray-700">
@@ -213,37 +247,38 @@ export default function SavedPage() {
             </CardContent>
           </Card>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-gray-800/50 border-gray-700">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-white">Total Saved</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-blue-400">{savedItems.length}</div>
-                <div className="text-sm text-gray-400">Products tracked</div>
-              </CardContent>
-            </Card>
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardHeader className="pb-2 md:pb-3">
+                  <CardTitle className="text-white text-sm md:text-base">Total Saved</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-xl md:text-2xl font-bold text-blue-400">{savedItems.length}</div>
+                  <div className="text-xs md:text-sm text-gray-400">Products tracked</div>
+                </CardContent>
+              </Card>
 
-            <Card className="bg-gray-800/50 border-gray-700">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-white">Money Saved</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-400">$0</div>
-                <div className="text-sm text-gray-400">From price drops</div>
-              </CardContent>
-            </Card>
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardHeader className="pb-2 md:pb-3">
+                  <CardTitle className="text-white text-sm md:text-base">Money Saved</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-xl md:text-2xl font-bold text-green-400">$0</div>
+                  <div className="text-xs md:text-sm text-gray-400">From price drops</div>
+                </CardContent>
+              </Card>
 
-            <Card className="bg-gray-800/50 border-gray-700">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-white">Active Alerts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-orange-400">0</div>
-                <div className="text-sm text-gray-400">Price monitoring</div>
-              </CardContent>
-            </Card>
+              <Card className="bg-gray-800/50 border-gray-700 sm:col-span-2 lg:col-span-1">
+                <CardHeader className="pb-2 md:pb-3">
+                  <CardTitle className="text-white text-sm md:text-base">Active Alerts</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-xl md:text-2xl font-bold text-orange-400">0</div>
+                  <div className="text-xs md:text-sm text-gray-400">Price monitoring</div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </main>
