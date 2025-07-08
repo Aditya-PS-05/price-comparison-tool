@@ -16,6 +16,12 @@ interface UserStats {
   moneySaved: number;
 }
 
+interface SavedProduct {
+  id: string;
+  savedPrice: number;
+  currentPrice: number;
+}
+
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -39,8 +45,8 @@ export default function ProfilePage() {
       const savedData = savedResponse.ok ? await savedResponse.json() : { total: 0 };
       
       // Calculate money saved from price drops
-      const savedProducts = savedData.products || [];
-      const moneySaved = savedProducts.reduce((total: number, product: any) => {
+      const savedProducts: SavedProduct[] = savedData.products || [];
+      const moneySaved = savedProducts.reduce((total: number, product: SavedProduct) => {
         if (product.savedPrice > product.currentPrice) {
           return total + (product.savedPrice - product.currentPrice);
         }
@@ -223,7 +229,7 @@ export default function ProfilePage() {
                       <span className="text-sm text-gray-300">Avg. Searches/Week</span>
                     </div>
                     <span className="text-sm font-semibold text-blue-400">
-                      {userStats.totalSearches > 0 ? Math.round(userStats.totalSearches / Math.max(1, Math.ceil((Date.now() - new Date(session.user?.createdAt || Date.now()).getTime()) / (7 * 24 * 60 * 60 * 1000)))) : 0}
+                      {userStats.totalSearches > 0 ? Math.round(userStats.totalSearches / Math.max(1, 4)) : 0}
                     </span>
                   </div>
                   

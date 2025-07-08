@@ -7,7 +7,7 @@ import { Sidebar } from '../../../components/dashboard/Sidebar';
 import { Badge } from '../../../components/ui/badge';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { History, Search, ExternalLink, Calendar, Clock, Menu } from 'lucide-react';
+import { History, Search, Calendar, Clock, Menu } from 'lucide-react';
 
 interface PastSearch {
   id: string;
