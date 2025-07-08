@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
@@ -11,7 +11,6 @@ import {
   User,
   Package,
   LogOut,
-  Menu,
   X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
