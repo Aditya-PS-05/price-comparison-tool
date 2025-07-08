@@ -16,6 +16,27 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PriceSphere - Global Price Comparison",
   description: "Compare prices across global markets with AI-powered analysis",
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
+  openGraph: {
+    title: 'PriceSphere - Global Price Comparison',
+    description: 'Compare prices across global markets with AI-powered analysis',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'PriceSphere',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PriceSphere - Global Price Comparison',
+    description: 'Compare prices across global markets with AI-powered analysis',
+  },
+  keywords: ['price comparison', 'global shopping', 'AI analysis', 'best deals', 'e-commerce', 'product search'],
+  authors: [{ name: 'PriceSphere Team' }],
+  creator: 'PriceSphere',
+  publisher: 'PriceSphere',
 };
 
 export default function RootLayout({

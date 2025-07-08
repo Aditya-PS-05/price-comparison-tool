@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Package, LogIn, UserPlus, ChevronDown } from "lucide-react";
+import { ArrowUpRight, Package, UserPlus, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/base/Footer";
 import { useSession } from "next-auth/react";
@@ -40,19 +40,12 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="flex items-center gap-1 md:gap-2">
-              <Button variant="outline" className="rounded-full text-sm px-3 md:px-4" asChild>
-                <Link href="/auth/signin">
-                  <LogIn className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                  <span className="hidden sm:inline">Sign In</span>
-                  <span className="sm:hidden">In</span>
-                </Link>
-              </Button>
-              <Button className="rounded-full text-sm px-3 md:px-4" asChild>
-                <Link href="/auth/signup">
+              <Button className="rounded-full text-sm px-3 md:px-4">
+                {/* <Link href="/auth/signup"> */}
                   <UserPlus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                  <span className="hidden sm:inline">Sign Up</span>
+                  <span className="hidden sm:inline">Unlimited Access</span>
                   <span className="sm:hidden">Up</span>
-                </Link>
+                {/* </Link> */}
               </Button>
             </div>
           )}
@@ -90,18 +83,20 @@ export default function HomePage() {
       </div>
 
       {/* Dashboard Video Section */}
-      <div className="my-16 md:my-32 w-full flex justify-center">
-        <div className="bg-[#ECEFF5] rounded-2xl md:rounded-3xl p-3 md:p-6 lg:p-10 w-full max-w-5xl">
-          <video
-            src="/video/ui.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="rounded-lg md:rounded-xl shadow-xl w-full h-auto"
-          >
-            Your browser does not support the video tag.
-          </video>
+      <div className="my-12 md:my-20 lg:my-32 w-full flex justify-center">
+        <div className="bg-[#ECEFF5] rounded-xl md:rounded-2xl lg:rounded-3xl p-2 sm:p-4 md:p-6 lg:p-8 xl:p-12 w-full max-w-7xl">
+          <div className="relative overflow-hidden rounded-lg md:rounded-xl lg:rounded-2xl shadow-2xl">
+            <video
+              src="/video/ui.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-auto min-h-[200px] sm:min-h-[300px] md:min-h-[400px] lg:min-h-[500px] xl:min-h-[600px] object-cover"
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
         </div>
       </div>
 
@@ -166,7 +161,7 @@ export default function HomePage() {
               )}
             </div>
           </div>
-        </div>
+      </div>
 
       {/* Footer Section */}
       <Footer />

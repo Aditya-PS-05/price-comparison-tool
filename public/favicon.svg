@@ -1,0 +1,14 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" rx="8" fill="#000000"/>
+  
+  <!-- Package icon - Lucide Package design -->
+  <g transform="translate(8, 8)">
+    <!-- Main package outline -->
+    <path d="M12.89 1.45L8 4.16L3.11 1.45L1 2.69V11.31L8 15.52L15 11.31V2.69L12.89 1.45Z" stroke="white" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+    <!-- Top face -->
+    <path d="M1 2.69L8 6.83L15 2.69" stroke="white" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+    <!-- Center line -->
+    <path d="M8 6.83V15.52" stroke="white" stroke-width="1.2" fill="none"/>
+  </g>
+</svg>
